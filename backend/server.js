@@ -1,0 +1,67 @@
+import express from 'express'
+import dotenv from 'dotenv'
+import mongoose from 'mongoose'
+import userRouter from './routes/userRoutes.js'
+import appointmentRoutes from "./routes/appointment.js"
+import paymentRoutes from "./routes/payment.js"
+import priscriptionRoutes from "./routes/prescriptions.js"
+import cors from 'cors'
+import Stripe from "stripe"
+import CookieParser from 'cookie-parser'
+import specializationRoutes from "./routes/specialization.js"
+import { upload } from './config/cloudinary.js'
+dotenv.config()
+const app = express()
+mongoose.connect(process.env.mongoUri).then(
+    console.log('connected to db')
+).then(
+    app.listen(process.env.PORT, () => {
+        console.log(`server started on ${process.env.PORT}`);
+    })
+)
+app.use(cors());
+
+
+
+
+app.use(express.json())
+app.use(CookieParser())
+
+app.use('/api/auth',userRouter)
+app.use('/api/appmnt', appointmentRoutes)
+app.use('/api/payment', paymentRoutes)
+app.use('/api/prescriptions', priscriptionRoutes)
+app.use('/api/specialization', specializationRoutes)
+
+const stripe = new Stripe(process.env.stripe_secret)
+app.post("/stripe", async (req,res)=>{
+    try {
+        const {items} = req.body
+        const lineItems = items.map(item =>({
+            price_data:{
+                currency:"usd",
+                product_data:{
+                    name:item.name
+                },
+                
+                unit_amount:item.price*100
+                    
+                
+            },
+             quantity: item.quantity || 1,
+        }))
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types:["card"],line_items:lineItems,mode:"payment",success_url:"http://localhost",cancel_url:"http://localhost:3000/calcel"
+        })
+        res.json({id:session.id,url:session.url})
+    } catch (error) {
+        console.log(error.message);
+    }
+})
+app.post("/upload", upload.single('profile'),async (req,res)=>{
+    if(!req.file){
+        return res.json("img required")
+    }
+    const {path,filename} = req.file
+    res.json({path,filename})
+})

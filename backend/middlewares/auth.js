@@ -1,0 +1,43 @@
+import jwt from 'jsonwebtoken'
+import userModel from '../models/userModel.js';
+import dotenv from 'dotenv'
+dotenv.config()
+export const isLogged = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer')) {
+    return res.status(401).json({ message: "No token, access denied" })
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ message: "You are not logged in" })
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.jwt_secret);
+
+    if (!decoded) {
+      return res.status(403).json({ message: "Invalid token" })
+    }
+    req.user = await userModel.findById(decoded.id).select('-password')
+    next();
+  } catch (error) {
+    return res.status(403).json({ message: error.message })
+  }
+};
+
+export const isAdmin = (req,res,next)=>{
+if(req.user && req.user.role == "admin"){
+  next()
+} else {
+  return res.json({error:"not an admin"})
+}
+}
+export const isDoctor = (req,res,next)=>{
+if(req.user && req.user.role == "doctor"){
+  next()
+} else {
+  return res.json({error:"not an admin"})
+}
+}
