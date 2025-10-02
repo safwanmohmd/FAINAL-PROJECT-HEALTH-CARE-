@@ -1,7 +1,7 @@
-import appointmentModel from "../models/appoinmentModel.js";
+import appointmentModel from "../models/appointmentModel.js";
 
 export const createAppointment = async (req, res) => {
-  const { patient_id, doctor_id, status, date } = req.body;
+  const { patient_id, doctor_id, status, date, specialization, description } = req.body;
   if (!patient_id || !doctor_id || !status) {
     return res.status(400).json({ message: "patient_id, doctor_id, and status are required" });
   }
@@ -10,7 +10,9 @@ export const createAppointment = async (req, res) => {
     patient_id,
     doctor_id,
     status,
-    date  // ✅ use provided date
+    date,
+    specialization,
+    description,  // ✅ use provided date
   });
 
   res.status(201).json({ message: "New appointment created", newAppointment });
@@ -35,7 +37,8 @@ export const getAllAppointments = async (req, res) => {
 
 export const getMyAppointments = async (req, res) => {
   try {
-    const appointments = await appointmentModel.find({ user: req.user.id || req.user.userid });
+    const appointments = await appointmentModel
+      .find({ patient_id: req.user._id }).populate("patient_id", "name") .populate("doctor_id" , "name").populate("specialization", "name")
     res.status(200).json({
       message: appointments.length > 0 ? "Appointments fetched" : "No appointments found",
       appointments, // always an array

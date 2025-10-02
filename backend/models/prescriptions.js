@@ -1,35 +1,30 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
-const priscriptionSchema = mongoose.Schema({
-    appoinment_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "appoinment",
-        required: true
-    },
-    patient_id:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"users"
-    },
-    doctor_id:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"users"
-    },
-    medicines:{
-        type:String,
-        required:true
+const prescriptionSchema = mongoose.Schema({
+  appointment_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "appointment",
+    required: true
+  },
+  patient_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users",
+    required: true
+  },
+  doctor_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users",
+    required: true
+  },
+  medicines: {
+    type: String,
+    required: true
+  },
+  date: {
+    type: Date,
+    default: Date.now
+  }
+});
 
-    },
-    amount:{
-        type:Number,
-        required:true
-    },
-    date:{
-        type:Date,
-        required:true
-    }
-
-})
-
-const priscriptionModel = mongoose.model('prescriptions',priscriptionSchema)
-
-export default priscriptionModel
+const prescriptionModel = mongoose.model("prescriptions", prescriptionSchema);
+export default prescriptionModel;

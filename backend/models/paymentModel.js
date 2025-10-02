@@ -1,9 +1,9 @@
 import mongoose, { mongo } from "mongoose";
 
 const paymentSchema = mongoose.Schema({
-    appoinment_id: {
+    appointment_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "appoinment",
+        ref: "appointment",
 
     },
     patient_id: {

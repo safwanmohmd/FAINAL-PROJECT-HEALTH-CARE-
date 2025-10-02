@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllAppmnt } from "../features/doctor/appointmentSlice";
-import axios from "axios";
+import { editApmntById, getAllAppmnt } from "../../features/doctor/appointmentSlice";
+import { createPrescription } from "../../features/doctor/prescriptionSlice";
 
 const Appointments = () => {
   const { allAppmnt, loading } = useSelector((state) => state.appointment);
@@ -11,7 +11,7 @@ const Appointments = () => {
   const [selectedAppmnt, setSelectedAppmnt] = useState(null);
   const [prescription, setPrescription] = useState("");
 
-  const token = localStorage.getItem("token");
+  const doctor = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     dispatch(getAllAppmnt());
@@ -25,11 +25,23 @@ const Appointments = () => {
 
   const handleSavePrescription = async () => {
     try {
-    
+      const newPresc = {
+        appointment_id: selectedAppmnt._id, // must match your schema
+        doctor_id: doctor._id,
+        patient_id: selectedAppmnt.patient_id._id,
+        medicines: prescription,
+      };
 
+      // Wait for prescription creation to complete
+      await dispatch(createPrescription(newPresc));
+      await dispatch(editApmntById({id :selectedAppmnt._id, updates: {status : "completed"}}))
+  
       // Refresh appointments after saving
       dispatch(getAllAppmnt());
+
       setIsModalOpen(false);
+      setSelectedAppmnt(null);
+      setPrescription("");
     } catch (error) {
       console.error(error);
       alert("Error saving prescription");
@@ -38,6 +50,7 @@ const Appointments = () => {
 
   return (
     <div>
+      {/* Appointments Table */}
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-4 m-5">
         {loading ? (
           <div className="p-5 text-center text-gray-600 font-medium">
@@ -73,10 +86,10 @@ const Appointments = () => {
                   <td className="px-6 py-4">{appmnt.patient_id.name}</td>
                   <td className="px-6 py-4">{appmnt.specialization.name}</td>
                   <td className="px-6 py-4 max-h-20 w-64">
-  <div className="max-h-20 overflow-auto break-words">
-    {appmnt.description}
-  </div>
-</td>
+                    <div className="max-h-20 overflow-auto break-words">
+                      {appmnt.description}
+                    </div>
+                  </td>
                   <td className="px-6 py-4">{appmnt.status}</td>
                   <td className="px-6 py-4">
                     <button
@@ -89,7 +102,7 @@ const Appointments = () => {
                       onClick={() => handleApprove(appmnt)}
                       className="m-2 bg-red-300 text-white px-4 py-2 rounded hover:underline"
                     >
-                      reject
+                      Reject
                     </button>
                   </td>
                 </tr>
@@ -99,24 +112,15 @@ const Appointments = () => {
         )}
       </div>
 
-      {/* Modal for Prescription */}
+      {/* Prescription Modal */}
       {isModalOpen && selectedAppmnt && (
-        <div className="fixed inset-0   flex items-center justify-center z-50">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-xl">
             <h2 className="text-xl font-bold mb-4">Appointment Details</h2>
-            <p>
-              <strong>Doctor:</strong> {selectedAppmnt.doctor_id.name}
-            </p>
-            <p>
-              <strong>Patient:</strong> {selectedAppmnt.patient_id.name}
-            </p>
-            <p>
-              <strong>Specialization:</strong>{" "}
-              {selectedAppmnt.specialization.name}
-            </p>
-            <p>
-              <strong>Date:</strong> {selectedAppmnt.description}
-            </p>
+            <p><strong>Doctor:</strong> {selectedAppmnt.doctor_id.name}</p>
+            <p><strong>Patient:</strong> {selectedAppmnt.patient_id.name}</p>
+            <p><strong>Specialization:</strong> {selectedAppmnt.specialization.name}</p>
+            <p><strong>Date:</strong> {selectedAppmnt.description}</p>
 
             <textarea
               placeholder="Enter prescription"

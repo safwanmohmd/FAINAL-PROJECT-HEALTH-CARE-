@@ -19,7 +19,7 @@ const appmntSchema = mongoose.Schema({
     status: {
         type: String,
         enum: ["pending", "confirmed", "cancelled", "completed", "rescheduled"],
-        default: "patient",
+        default: "pending",
 
     },
     description:{
@@ -27,10 +27,10 @@ const appmntSchema = mongoose.Schema({
     },
     date:{
         type:Date,
-        required:true
+        default:Date.now()
     }
 })
 
-const appointmentModel = mongoose.model('appoinment',appmntSchema)
+const appointmentModel = mongoose.model('appointment',appmntSchema)
 
 export default appointmentModel

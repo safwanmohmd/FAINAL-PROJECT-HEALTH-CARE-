@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../features/auth/authSlice";
-import { getAllSpcl } from "../features/doctor/specializationSlice";
+import { registerUser } from "../../features/auth/authSlice";
+import { getAllSpcl } from "../../features/doctor/specializationSlice";
 
 const Register = () => {
   const dispatch = useDispatch();

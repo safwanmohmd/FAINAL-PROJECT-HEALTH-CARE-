@@ -1,35 +1,41 @@
 import prescriptionModel from "../models/prescriptions.js";
 
-
 export const createPrescription = async (req, res) => {
-  const { patient_id, doctor_id, appointment_id, medicines, amount, date } = req.body;
+  try {
+    const { patient_id, doctor_id, appointment_id, medicines } = req.body;
 
-  if (!patient_id || !doctor_id || !medicines) {
-    return res.status(400).json({ message: "patient_id, doctor_id, and medicines are required" });
+    if (!patient_id || !doctor_id || !appointment_id || !medicines) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const newPrescription = {
+      patient_id,
+      doctor_id,
+      appointment_id,
+      medicines,
+      date: Date.now()
+    };
+
+    const createpresc = await prescriptionModel.create(newPrescription);
+
+    res.status(201).json({ message: "New prescription created", prescription : createpresc });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
-
-  const newPrescription = await prescriptionModel.create({
-    patient_id,
-    doctor_id,
-    appointment_id,
-    medicines,
-    amount,
-    date // ✅ use provided date if available
-  });
-
-  res.status(201).json({ message: "New prescription created", newPrescription });
 };
 
 export const getAllPrescriptions = async (req, res) => {
-  const prescriptions = await prescriptionModel.find({});
+  const prescriptions = await prescriptionModel.find({}).populate("doctor_id", "name").populate("patient_id", "name")
   res.status(200).json({ message: "Prescriptions fetched successfully", prescriptions });
 };
 
+
 export const getMyPrescriptions = async (req, res) => {
   try {
-    const prescriptions = await prescriptionModel.find({ user: req.user.id || req.user.userid });
+    const prescriptions = await prescriptionModel
+      .find({ patient_id: req.user._id }).populate("patient_id", "name") .populate("doctor_id" , "name")
     res.status(200).json({
-      message: prescriptions.length > 0 ? "Prescriptions fetched" : "No prescriptions found",
+      message: prescriptions.length > 0 ? "prescriptions fetched" : "No prescriptions found",
       prescriptions, // always an array
     });
   } catch (error) {
@@ -37,7 +43,6 @@ export const getMyPrescriptions = async (req, res) => {
     res.status(500).json({ message: "Server error", prescriptions: [] });
   }
 };
-
 export const editPrescriptionById = async (req, res) => {
   const { id } = req.params;
   const findPrescription = await prescriptionModel.findById(id);

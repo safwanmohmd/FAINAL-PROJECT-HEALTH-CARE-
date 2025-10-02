@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { getAllAppmnt } from "../features/doctor/appointmentSlice";
+import { getAllAppmnt } from "../../features/doctor/appointmentSlice";
 import { useDispatch, useSelector } from "react-redux";
-import Appointments from "../componants/Appointments";
-import Sidebar from "../componants/Sidebar";
+import Appointments from "../../componants/doctor/Appointments";
+import Sidebar from "../../componants/common/Sidebar";
+import PrescriptionTable from "../../componants/doctor/PrescriptionTable";
 
-const TaskTable = () => {
+const Prescriptions = () => {
   return (
     <>
 
@@ -14,11 +15,11 @@ const TaskTable = () => {
         <div className="mt-4 m-5 flex flex-col md:flex-row justify-between gap-3 md:gap-0">
           <h2 className="text-lg font-semibold">My Tasks</h2>
         </div>
-        <Appointments />
+        <PrescriptionTable />
       </div>      
     </div>
     </>
   );
 };
 
-export default TaskTable;
+export default Prescriptions;

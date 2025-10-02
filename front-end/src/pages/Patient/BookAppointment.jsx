@@ -1,48 +1,58 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllDoctors, registerUser } from "../features/auth/authSlice";
+import { getAllDoctors } from "../../features/auth/authSlice"; 
+import { createAppmnt } from "../../features/doctor/appointmentSlice";
+
 
 const BookAppointment = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // Redux state
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading, error } = useSelector((state) => state.appointment);
   const { allDoctors } = useSelector((state) => state.auth);
 
-  // Local form state
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState(""); // Here used for patient notes
-  const [role] = useState("patient");
-  const [specialization, setSpecialization] = useState("");
+  // Local state
+  const [selectedDoc, setSelectedDoc] = useState("");
+  const [selectedSpcl, setSelectedSpcl] = useState("");
+  const [description, setDescription] = useState("");
 
-  // Fetch all doctors on mount
+  // Fetch doctors when component mounts
   useEffect(() => {
     dispatch(getAllDoctors());
   }, [dispatch]);
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newUser = {
-      name,
-      email,
-      role,
-      specialization: role === "doctor" ? specialization : null,
-      password, // used for patient notes
+
+    if (!selectedDoc || !description) {
+      alert("Please select a doctor and add your notes!");
+      return;
+    }
+
+    const newAppmnt = {
+      patient_id: user?._id,
+      doctor_id: selectedDoc,
+      specialization: selectedSpcl,
+      description,
+      
+      status : "pending"
     };
-    dispatch(registerUser(newUser));
+
+    dispatch(createAppmnt(newAppmnt))
+      
   };
 
   return (
     <div className="h-screen w-screen flex justify-center items-center bg-gradient-to-r from-blue-100 to-blue-200">
       <div className="shadow-2xl rounded-2xl bg-white w-[80%] max-w-7xl flex overflow-hidden">
-        {/* Left Section: Gradient + Hero */}
-        <div className="w-1/2 flex flex-col justify-center items-center bg-gradient-to-r from-blue-500 to-blue-400 p-6 relative">
-          {/* Circle background like App.jsx */}
-          <div className="absolute w-[400px] h-[400px] bg-teal-500 rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-30 hidden md:block"></div>
 
+        {/* Left Section */}
+        <div className="w-1/2 flex flex-col justify-center items-center bg-gradient-to-r from-blue-500 to-blue-400 p-6 relative">
+          <div className="absolute w-[400px] h-[400px] bg-teal-500 rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-30 hidden md:block"></div>
           <img
             src="../../media/doc.png"
             alt="Doctor"
@@ -55,50 +65,28 @@ const BookAppointment = () => {
           </p>
         </div>
 
-        {/* Right Section: Form */}
+        {/* Right Section */}
         <div className="w-1/2 p-8 flex flex-col bg-gray-50 justify-center">
           <h2 className="text-2xl font-bold text-gray-700 mb-4">
             Book An Appointment
           </h2>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-            {/* Name */}
-            <label className="text-gray-500 text-sm" htmlFor="name">
-              Name
-            </label>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
-              type="text"
-              id="name"
-              placeholder="Enter your name"
-            />
-
-            {/* Email */}
-            <label className="text-gray-500 text-sm" htmlFor="email">
-              Email
-            </label>
-            <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
-              type="email"
-              id="email"
-              placeholder="Enter your email"
-            />
-
             {/* Choose Doctor */}
             <label className="text-gray-500 text-sm" htmlFor="doc">
               Choose Your Doctor
             </label>
             <select
               id="doc"
-              value={specialization}
-              onChange={(e) => setSpecialization(e.target.value)}
+              value={selectedDoc}
+              onChange={(e) => {
+                setSelectedDoc(e.target.value);
+                const doctor = allDoctors.find((d) => d._id === e.target.value);
+                setSelectedSpcl(doctor?.specialization?._id || "");
+              }}
               className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
             >
-              <option value="">Choose Your Doctor</option>
+              <option value="">Select a Doctor</option>
               {allDoctors?.map((x) => (
                 <option key={x._id} value={x._id}>
                   {x.name} ({x.specialization?.name})
@@ -111,8 +99,8 @@ const BookAppointment = () => {
               Describe Your Health Concern
             </label>
             <textarea
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
               id="notes"
               rows={6}
@@ -125,7 +113,7 @@ const BookAppointment = () => {
               className="bg-blue-500 shadow-md text-white font-semibold hover:bg-blue-600 py-2 rounded-md transition duration-200 text-sm disabled:opacity-50"
               type="submit"
             >
-              {loading ? "Please wait..." : "Submit Form"}
+              {loading ? "Booking..." : "Book Appointment"}
             </button>
 
             {error && <p className="text-red-500 text-sm">{error}</p>}

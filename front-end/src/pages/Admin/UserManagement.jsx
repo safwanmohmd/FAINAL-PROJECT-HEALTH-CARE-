@@ -1,8 +1,8 @@
 import React from "react";
-import Navbar from "../componants/Navbar";
-import Sidebar from "../componants/Sidebar";
-import TaskTable from "../componants/TaskTable";
-import UsersTable from "../componants/usersTable";
+import Navbar from "../../componants/common/Navbar";
+import Sidebar from "../../componants/common/Sidebar";
+import TaskTable from "../../componants/doctor/TaskTable";
+import UsersTable from "../../componants/admin/UsersTable";
 
 const UserManagement = () => {
   return (

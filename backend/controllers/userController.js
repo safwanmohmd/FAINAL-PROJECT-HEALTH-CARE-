@@ -82,6 +82,20 @@ export const logout = async (req, res) => {
   res.cookie("jwt", "", { httpOnly: true, expires: new Date(0) })
   res.json("logged out")
 }
+
+export const editUserById = async (req, res) => {
+  const { id } = req.params;
+  const findAppointment = await userModel.findById(id);
+
+  if (!findAppointment) {
+    return res.status(404).json({ message: "Appointment not found" });
+  }
+
+  const updatedAppointment = await userModel.findByIdAndUpdate(id, req.body, { new: true });
+  res.status(200).json({ message: "Appointment updated", updatedAppointment });
+};
+
+
 export const getUserById = async (req, res) => {
 
   const { id } = req.params
@@ -119,7 +133,7 @@ export const getAllDoctors = async (req, res) => {
 
 export const getUsers = async (req, res) => {
 
-  const { id } = req.params
+
   const users = await userModel.find({})
 
   res.json({ message: "users", users })

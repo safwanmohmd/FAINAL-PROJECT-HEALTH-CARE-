@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { getAllAppmnt } from "../features/doctor/appointmentSlice";
+import { getAllAppmnt } from "../../features/doctor/appointmentSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Appointments from "./Appointments";
 

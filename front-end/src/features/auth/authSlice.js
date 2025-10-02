@@ -41,10 +41,38 @@ export const getAllDoctors = createAsyncThunk(
     }
   }
 );
+export const getAllUsers = createAsyncThunk(
+  "auth/users",
+  async (data) => {
+    try {
+      const response = await axiosInstance.get("/auth/users");
+    
+      return { success: true, ...response.data };
+       // include success flag
+    } catch (error) {
+      // Return error as data instead of throwing
+      return { success: false, message: error.response?.data?.message || error.message };
+    }
+  }
+);
+
+
+export const editUserById = createAsyncThunk(
+  "auth/editUserById",
+  async ({ id, updates }) => {
+    try {
+      const response = await axiosInstance.patch(`/auth/${id}`, updates);
+      return { success: true, user: response.data.user, message: response.data.message };
+    } catch (error) {
+      return { success: false, message: error.response?.data?.message || error.message };
+    }
+  }
+);
+
 
 const authSlice = createSlice({
   name: "auth",
-  initialState: { user: null, loading: false, error: null, allDoctors:[] },
+  initialState: { user: null, loading: false, error: null, allDoctors:[] ,allUsers :[]},
   reducers: {
     logout: (state) => {
       state.user = null;
@@ -78,7 +106,13 @@ const authSlice = createSlice({
         if (action.payload.success) {
           state.user = action.payload.user;
            
-          toast.success(action.payload.message); // backend success
+          toast.success(action.payload.message);
+          if(state.user.role == "admin"){
+ window.location.href = "/dashboard";
+          } else{
+             window.location.href = "/";
+          }
+          // backend success
         } else {
           state.error = action.payload.message;
           toast.error(action.payload.message); // backend error
@@ -94,6 +128,41 @@ const authSlice = createSlice({
         state.loading = false;
         if (action.payload.success) {
           state.allDoctors = action.payload.doctors;
+          toast.success(action.payload.message); // backend success
+        } else {
+          state.error = action.payload.message;
+          toast.error(action.payload.message); // backend error
+        }
+      })
+
+
+
+      .addCase(getAllUsers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAllUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        if (action.payload.success) {
+       
+          state.allUsers = action.payload.users;
+          toast.success(action.payload.message); // backend success
+        } else {
+          state.error = action.payload.message;
+          toast.error(action.payload.message); // backend error
+        }
+      })
+
+
+      .addCase(editUserById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(editUserById.fulfilled, (state, action) => {
+        state.loading = false;
+        if (action.payload.success) {
+        
+     
           toast.success(action.payload.message); // backend success
         } else {
           state.error = action.payload.message;

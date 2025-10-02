@@ -10,6 +10,7 @@ import Stripe from "stripe"
 import CookieParser from 'cookie-parser'
 import specializationRoutes from "./routes/specialization.js"
 import { upload } from './config/cloudinary.js'
+import bookModel from './models/bookmodel.js'
 dotenv.config()
 const app = express()
 mongoose.connect(process.env.mongoUri).then(
@@ -58,10 +59,22 @@ app.post("/stripe", async (req,res)=>{
         console.log(error.message);
     }
 })
-app.post("/upload", upload.single('profile'),async (req,res)=>{
+
+app.get("/api/books", async (req,res)=>{
+     const books = await bookModel.find({});
+  res.status(200).json({ message: "Prescriptions fetched successfully", books });
+})
+app.post("/api/addbook", upload.single('profile'),async (req,res)=>{
     if(!req.file){
         return res.json("img required")
     }
+    const {title, price} = req.body
+    const newbook = {
+title,
+price,
+img:req.file.path
+    }
+    const createBok = await bookModel.create(newbook)
     const {path,filename} = req.file
-    res.json({path,filename})
+    res.json({message : "book added successfully", book:createBok})
 })
