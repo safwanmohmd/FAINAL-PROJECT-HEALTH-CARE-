@@ -43,6 +43,19 @@ export const getMyPrescriptions = async (req, res) => {
     res.status(500).json({ message: "Server error", prescriptions: [] });
   }
 };
+export const getDocPrescriptions = async (req, res) => {
+  try {
+    const prescriptions = await prescriptionModel
+      .find({ doctor_id: req.user._id }).populate("patient_id", "name") .populate("doctor_id" , "name")
+    res.status(200).json({
+      message: prescriptions.length > 0 ? "prescriptions fetched" : "No prescriptions found",
+      prescriptions, // always an array
+    });
+  } catch (error) {
+    console.error("Error fetching prescriptions:", error);
+    res.status(500).json({ message: "Server error", prescriptions: [] });
+  }
+};
 export const editPrescriptionById = async (req, res) => {
   const { id } = req.params;
   const findPrescription = await prescriptionModel.findById(id);

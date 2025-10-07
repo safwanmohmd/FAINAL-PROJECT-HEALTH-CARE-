@@ -1,11 +1,7 @@
 import mongoose, { mongo } from "mongoose";
 
 const paymentSchema = mongoose.Schema({
-    appointment_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "appointment",
-
-    },
+   
     patient_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users"
@@ -14,7 +10,10 @@ const paymentSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "users"
     },
-    date: Date,
+    date: {
+        type:Date,
+        default:Date.now()
+    } ,
     status: {
         type: String,
         enum: ["success", "failed", "pending"],

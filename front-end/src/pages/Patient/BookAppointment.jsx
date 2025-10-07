@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllDoctors } from "../../features/auth/authSlice"; 
-import { createAppmnt } from "../../features/doctor/appointmentSlice";
-
+import { getAllDoctors } from "../../features/auth/authSlice";
+import {
+  createAppmnt,
+  createStripeUrl,
+} from "../../features/doctor/appointmentSlice";
+import toast from "react-hot-toast";
+import { createPayment } from "../../features/common/paymentSlice";
 
 const BookAppointment = () => {
   const dispatch = useDispatch();
@@ -17,7 +21,7 @@ const BookAppointment = () => {
   const [selectedDoc, setSelectedDoc] = useState("");
   const [selectedSpcl, setSelectedSpcl] = useState("");
   const [description, setDescription] = useState("");
-
+  const [selectedDate, setSelectedDate] = useState("");
   // Fetch doctors when component mounts
   useEffect(() => {
     dispatch(getAllDoctors());
@@ -25,11 +29,11 @@ const BookAppointment = () => {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!selectedDoc || !description) {
-      alert("Please select a doctor and add your notes!");
+    if (!selectedDoc || !description || !selectedDate) {
+      toast.error("Please select a doctor, date and add your notes!");
       return;
     }
 
@@ -38,18 +42,26 @@ const BookAppointment = () => {
       doctor_id: selectedDoc,
       specialization: selectedSpcl,
       description,
-      
-      status : "pending"
+      date: selectedDate,
+      status: "pending",
     };
-
-    dispatch(createAppmnt(newAppmnt))
-      
+    
+     const newPayment = {
+        patient_id: user?._id,
+        doctor_id: selectedDoc,
+        status:"pending"
+    }
+dispatch(createPayment(newPayment))
+     localStorage.setItem("pendingAppointment", JSON.stringify(newAppmnt));
+    
+     await dispatch( createStripeUrl({  items: [{ name: "test", price: 100 }], })
+    );
+    
   };
 
   return (
     <div className="h-screen w-screen flex justify-center items-center bg-gradient-to-r from-blue-100 to-blue-200">
       <div className="shadow-2xl rounded-2xl bg-white w-[80%] max-w-7xl flex overflow-hidden">
-
         {/* Left Section */}
         <div className="w-1/2 flex flex-col justify-center items-center bg-gradient-to-r from-blue-500 to-blue-400 p-6 relative">
           <div className="absolute w-[400px] h-[400px] bg-teal-500 rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-30 hidden md:block"></div>
@@ -95,6 +107,16 @@ const BookAppointment = () => {
             </select>
 
             {/* Health Concern Notes */}
+            <label className="text-gray-500 text-sm" htmlFor="date">
+              Choose A Date
+            </label>
+            <input
+              id="date"
+              type="date"
+              value={selectedDate} // ✅ controlled input
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
+            />
             <label className="text-gray-500 text-sm" htmlFor="notes">
               Describe Your Health Concern
             </label>

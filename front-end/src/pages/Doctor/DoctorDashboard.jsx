@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "../../componants/common/Navbar";
 import Sidebar from "../../componants/common/Sidebar";
-import TaskTable from "../../componants/doctor/TaskTable";
+import TaskTable from "../../componants/doctor/DoctorHome";
 
 const DoctorDashboard = () => {
   return (

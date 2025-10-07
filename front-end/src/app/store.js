@@ -4,13 +4,15 @@ import spclReducer from "../features/doctor/specializationSlice"
 import appmntReducer from "../features/doctor/appointmentSlice"
 import prescriptionReducer from "../features/doctor/prescriptionSlice"
 import bookReducer from "../features/cloudinary/bookModel"
+import paymentReducer from "../features/common/paymentSlice"
 const store = configureStore({
     reducer: {
         auth:authReducer,
         specialization:spclReducer,
         appointment: appmntReducer,
         prescription: prescriptionReducer,
-        books : bookReducer
+        books : bookReducer,
+        payments:paymentReducer,
     }
 })
 

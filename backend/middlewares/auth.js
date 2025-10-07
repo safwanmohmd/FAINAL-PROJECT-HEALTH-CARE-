@@ -43,7 +43,7 @@ export const isAdmin = (req, res, next) => {
 };
 
 export const isDoctor = (req, res, next) => {
-  if (req.user && req.user.role === "doctor") {
+  if (req.user && req.user.role === "doctor" || req.user.role == "admin") {
     next();
   } else {
     return res.status(403).json({ error: "Not a doctor" });

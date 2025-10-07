@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { editUserById, getAllUsers } from "../../features/auth/authSlice";
+import { getAllSpcl } from "../../features/doctor/specializationSlice";
 
 const UsersTable = () => {
   const dispatch = useDispatch();
   const { allUsers, loading } = useSelector((state) => state.auth);
+   const { allSpcl } = useSelector((state) => state.specialization);
 
   const [editingId, setEditingId] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
+  const [specialization, setSpecialization] = useState(""); // 🔹 new state
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
   useEffect(() => {
     dispatch(getAllUsers());
-  }, [dispatch]);
+    dispatch(getAllSpcl())
+  }, []);
 
   const handleEdit = (id) => {
     const userToEdit = allUsers.find((usr) => usr._id === id);
@@ -23,6 +27,7 @@ const UsersTable = () => {
     setName(userToEdit.name);
     setEmail(userToEdit.email);
     setRole(userToEdit.role);
+    setSpecialization(userToEdit.specialization || ""); // 🔹 load specialization if doctor
   };
 
   const handleCancel = () => {
@@ -30,11 +35,18 @@ const UsersTable = () => {
     setName("");
     setEmail("");
     setRole("");
+    setSpecialization("");
   };
 
-  const handleSave = (id) => {
-    dispatch(editUserById({ id, updates: { name, email, role } }));
+  const handleSave = async (id) => {
+   await dispatch(
+      editUserById({
+        id,
+        updates: { name, email, role, specialization }, // 🔹 save specialization
+      })
+    );
     handleCancel();
+    dispatch(getAllUsers())
   };
 
   const handleApprove = (id) => {
@@ -47,12 +59,10 @@ const UsersTable = () => {
 
   // 🔹 Filter + Search
   const filteredUsers = allUsers.filter((user) => {
-    // search filter (name or email)
     const matchesSearch =
       user.name.toLowerCase().includes(search.toLowerCase()) ||
       user.email.toLowerCase().includes(search.toLowerCase());
 
-    // status filter
     const matchesStatus =
       statusFilter === "all" ? true : user.approved === statusFilter;
 
@@ -90,11 +100,27 @@ const UsersTable = () => {
         <table className="min-w-full divide-y divide-gray-200 bg-white shadow-lg rounded-lg">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Name
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Email
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Role
+              </th>
+
+              {/* 🔹 New Specialization Column */}
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Specialization
+              </th>
+
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
           </thead>
 
@@ -105,7 +131,10 @@ const UsersTable = () => {
                 const isEditing = editingId === userId;
 
                 return (
-                  <tr key={userId} className="hover:bg-gray-100 transition-colors">
+                  <tr
+                    key={userId}
+                    className="hover:bg-gray-100 transition-colors"
+                  >
                     {/* Name */}
                     <td className="px-6 py-4 whitespace-nowrap flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
@@ -124,7 +153,9 @@ const UsersTable = () => {
                             className="bg-gray-50 border rounded w-full py-1 px-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
                           />
                         ) : (
-                          <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {user.name}
+                          </div>
                         )}
                       </div>
                     </td>
@@ -139,7 +170,9 @@ const UsersTable = () => {
                           className="bg-gray-50 border rounded w-full py-1 px-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
                         />
                       ) : (
-                        <div className="text-sm text-gray-500">{user.email}</div>
+                        <div className="text-sm text-gray-500">
+                          {user.email}
+                        </div>
                       )}
                     </td>
 
@@ -157,6 +190,38 @@ const UsersTable = () => {
                         </select>
                       ) : (
                         <div className="text-sm text-gray-500">{user.role}</div>
+                      )}
+                    </td>
+
+                    {/* 🔹 Specialization */}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {user.role === "doctor" ? (
+                        isEditing ? (
+
+                           <select
+                       type="text"
+                            value={specialization}
+                            onChange={(e) =>
+                              setSpecialization(e.target.value)
+                            }
+                          className="bg-gray-50 border rounded w-full py-1 px-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                        >
+                         <option value="">Select Specialization</option>
+                          {allSpcl.map((x)=>(
+                             <option value={x._id} key={x._id}>{x.name}</option>
+              ))}
+                         
+                        
+                        </select>
+                        
+                         
+                        ) : (
+                          <div className="text-sm text-gray-500">
+                            {user.specialization?.name || "—"}
+                          </div>
+                        )
+                      ) : (
+                        <div className="text-gray-400">N/A</div>
                       )}
                     </td>
 
@@ -234,7 +299,10 @@ const UsersTable = () => {
               })
             ) : (
               <tr>
-                <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                <td
+                  colSpan="6"
+                  className="px-6 py-4 text-center text-gray-500"
+                >
                   No users found
                 </td>
               </tr>

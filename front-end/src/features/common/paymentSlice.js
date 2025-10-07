@@ -5,18 +5,20 @@ import toast from "react-hot-toast";
 // Fetch a single specialization by ID
 
 
-export const createSpcl = createAsyncThunk(
-    "auth/spcl/create",
+export const createPayment = createAsyncThunk(
+    "auth/payment/create",
     async (data) => {
         try {
             const user = JSON.parse(localStorage.getItem("user"));
             const token = user?.token;
-            const response = await axiosInstance.post("/specialization", data, {
+            const response = await axiosInstance.post("/payment", data, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
-
+      
+           const paymentId = response.data.newPayment._id; // ✅ only store the _id
+      localStorage.setItem("pendingPaymentId", paymentId);
             return { success: true, ...response.data }; // include success flag
         } catch (error) {
             // Return error as data instead of throwing
@@ -27,11 +29,11 @@ export const createSpcl = createAsyncThunk(
 
 
 
-export const editSpclById = createAsyncThunk(
-    "auth/editSpclById",
+export const editPaymentById = createAsyncThunk(
+    "auth/editPaymentById",
     async ({ id, updates }) => {
         try {
-            const response = await axiosInstance.patch(`/specialization/${id}`, updates);
+            const response = await axiosInstance.patch(`/payment/${id}`, updates);
             return { success: true, user: response.data.user, message: response.data.message };
         } catch (error) {
             return { success: false, message: error.response?.data?.message || error.message };
@@ -41,11 +43,17 @@ export const editSpclById = createAsyncThunk(
 
 
 // Fetch all specializations
-export const getAllSpcl = createAsyncThunk(
+export const getAllPayment = createAsyncThunk(
   "specialization/getAll",
   async () => {
     try {
-      const response = await axiosInstance.get("/specialization");
+        const user = JSON.parse(localStorage.getItem("user"));
+            const token = user?.token;
+      const response = await axiosInstance.get("/payment", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
       // backend returns { message: "...", specializations: [...] }
            return { success: true, ...response.data };
     } catch (error) {
@@ -54,51 +62,44 @@ export const getAllSpcl = createAsyncThunk(
   }
 );
 
-const spclSlice = createSlice({
+const paymentSlice = createSlice({
   name: "specialization",
   initialState: {
-    allSpcl: [],
+    allPayments: [],
     selected: null, // for single specialization if needed
     loading: false,
     error: null,
   },
-  reducers: {
-    clearSpecializations: (state) => {
-      state.allSpcl = [];
-      state.selected = null;
-      state.error = null;
-      state.loading = false;
-    },
-  },
+  reducers: { },
   extraReducers: (builder) => {
     builder
      
       // get all specializations
-      .addCase(getAllSpcl.pending, (state) => {
+      .addCase(getAllPayment.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getAllSpcl.fulfilled, (state, action) => {
+      .addCase(getAllPayment.fulfilled, (state, action) => {
         state.loading = false;
         if (action.payload.success) {
-          state.allSpcl = action.payload.specializations
+          state.allPayments = action.payload.payments
         } else {
           state.error = action.payload.message;
           toast.error(action.payload.message);
         }
       })
-      .addCase(getAllSpcl.rejected, (state, action) => {
+      .addCase(getAllPayment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
         toast.error(action.error.message);
       })
 
 
-       .addCase(editSpclById.pending, (state) => {
+       .addCase(editPaymentById.pending, (state) => {
                       state.loading = true;
                       state.error = null;
                   })
-                  .addCase(editSpclById.fulfilled, (state, action) => {
+                  .addCase(editPaymentById.fulfilled, (state, action) => {
                       state.loading = false;
                       if (action.payload.success) {
       
@@ -111,11 +112,11 @@ const spclSlice = createSlice({
                   })
 
 
-       .addCase(createSpcl.pending, (state) => {
+       .addCase(createPayment.pending, (state) => {
                       state.loading = true;
                       state.error = null;
                   })
-                  .addCase(createSpcl.fulfilled, (state, action) => {
+                  .addCase(createPayment.fulfilled, (state, action) => {
                       state.loading = false;
                       if (action.payload.success) {
       
@@ -130,5 +131,5 @@ const spclSlice = createSlice({
   },
 });
 
-export const { clearSpecializations } = spclSlice.actions;
-export default spclSlice.reducer;
+
+export default paymentSlice.reducer;

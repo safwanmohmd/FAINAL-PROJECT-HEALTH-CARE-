@@ -1,21 +1,26 @@
+import React from "react";
+import Navbar from "../../componants/common/Navbar";
 import Sidebar from "../../componants/common/Sidebar";
+import PatientHome from "../../componants/patient/PatientHome";
 
-import PatientAppmnts from "../../componants/patient/PatientAppmnts";
-
-const PatientDashboard = () => {
+const DoctorDashboard = () => {
   return (
-    <>
-
-    <div className="flex h-screen"><Sidebar />
-      <div className="w-full bg-gray-200 p-4">
-        <div className="mt-4 m-5 flex flex-col md:flex-row justify-between gap-3 md:gap-0">
-          <h2 className="text-lg font-semibold">MyAppointments</h2>
+    <div className="bg-gray-200 min-h-screen flex justify-center items-start px-2 sm:px-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-[1600px] overflow-hidden">
+      
+        <div className="flex flex-col md:flex-row h-full">
+         
+          <Sidebar />
+           
+          <div className="bg-gray-200 w-full p-4">
+            <Navbar/>
+            <PatientHome />
+          </div>
         </div>
-        <PatientAppmnts />
-      </div>      
+      </div>
+      
     </div>
-    </>
   );
 };
 
-export default PatientDashboard;
+export default DoctorDashboard;

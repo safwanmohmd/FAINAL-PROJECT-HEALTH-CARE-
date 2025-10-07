@@ -35,7 +35,7 @@ app.use('/api/prescriptions', priscriptionRoutes)
 app.use('/api/specialization', specializationRoutes)
 
 const stripe = new Stripe(process.env.stripe_secret)
-app.post("/stripe", async (req,res)=>{
+app.post("/api/stripe", async (req,res)=>{
     try {
         const {items} = req.body
         const lineItems = items.map(item =>({
@@ -52,9 +52,9 @@ app.post("/stripe", async (req,res)=>{
              quantity: item.quantity || 1,
         }))
         const session = await stripe.checkout.sessions.create({
-            payment_method_types:["card"],line_items:lineItems,mode:"payment",success_url:"http://localhost",cancel_url:"http://localhost:3000/calcel"
+            payment_method_types:["card"],line_items:lineItems,mode:"payment",success_url:"http://localhost:5173/payment-success",cancel_url:"http://localhost:3000/calcel"
         })
-        res.json({id:session.id,url:session.url})
+        res.json({ id:session.id,url:session.url})
     } catch (error) {
         console.log(error.message);
     }

@@ -59,6 +59,25 @@ export const getMyPrescriptions = createAsyncThunk(
 );
 
 
+export const getDocPrescriptions = createAsyncThunk(
+  "prescription/getDoc",
+  async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const token = user?.token;
+
+      const response = await axiosInstance.get("/prescriptions/getdoc", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+    return { success: true, ...response.data };
+    } catch (error) {
+      return { success: false, message: error.response?.data?.message || error.message };
+    }
+  }
+);
+
+
 
 export const deletePrescription = createAsyncThunk(
   "prescription/delete",
@@ -84,7 +103,8 @@ const prescriptionSlice = createSlice({
     allPresc: [],
     loading: false,
     error: null,
-    myPresc : []
+    myPresc : [],
+    docPresc :[]
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -148,6 +168,23 @@ const prescriptionSlice = createSlice({
        toast.success(action.payload.message)
       })
       .addCase(getMyPrescriptions.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        toast.error(action.payload.message);
+      })
+
+
+
+      .addCase(getDocPrescriptions.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getDocPrescriptions.fulfilled, (state, action) => {
+        state.loading = false;
+        state.docPresc = action.payload.prescriptions
+       toast.success(action.payload.message)
+      })
+      .addCase(getDocPrescriptions.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         toast.error(action.payload.message);

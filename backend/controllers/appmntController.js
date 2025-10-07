@@ -48,6 +48,19 @@ export const getMyAppointments = async (req, res) => {
     res.status(500).json({ message: "Server error", appointments: [] });
   }
 };
+export const getDocAppointments = async (req, res) => {
+  try {
+    const appointments = await appointmentModel
+      .find({ doctor_id: req.user._id }).populate("patient_id", "name") .populate("doctor_id" , "name").populate("specialization", "name")
+    res.status(200).json({
+      message: appointments.length > 0 ? "Appointments fetched" : "No appointments found",
+      appointments, // always an array
+    });
+  } catch (error) {
+    console.error("Error fetching appointments:", error);
+    res.status(500).json({ message: "Server error", appointments: [] });
+  }
+};
 
 export const editAppointmentById = async (req, res) => {
   const { id } = req.params;

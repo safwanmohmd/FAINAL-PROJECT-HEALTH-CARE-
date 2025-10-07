@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllAppmnt } from "../../features/doctor/appointmentSlice";
 import axios from "axios";
-import { createPrescription, deletePrescription, getAllPrescriptions, getDocPrescriptions } from "../../features/doctor/prescriptionSlice";
+import { createPrescription, deletePrescription, getAllPrescriptions } from "../../features/doctor/prescriptionSlice";
 import toast from "react-hot-toast";
 
 const PrescriptionTable = () => {
-  const { docPresc, loading } = useSelector((state) => state.prescription);
+  const { allPresc, loading } = useSelector((state) => state.prescription);
   const dispatch = useDispatch();
 
 
   useEffect(() => {
-    dispatch(getDocPrescriptions());
-    console.log(docPresc);
+    dispatch(getAllPrescriptions());
+    console.log(allPresc);
   }, []);
 
   const handleDelete = (id) => {
@@ -29,7 +29,7 @@ const PrescriptionTable = () => {
           <div className="p-5 text-center text-gray-600 font-medium">
             Loading...
           </div>
-        ) : docPresc.length === 0 ? (
+        ) : allPresc.length === 0 ? (
           <div className="p-5 text-center text-gray-600 font-medium">
             No PrescriptionTable found.
           </div>
@@ -46,7 +46,7 @@ const PrescriptionTable = () => {
               </tr>
             </thead>
             <tbody>
-              {docPresc.map((presc) => (
+              {allPresc.map((presc) => (
                 <tr
                   key={presc._id}
                   className={`${

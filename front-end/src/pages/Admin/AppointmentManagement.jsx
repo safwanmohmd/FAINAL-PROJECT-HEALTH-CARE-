@@ -3,8 +3,9 @@ import Navbar from "../../componants/common/Navbar";
 import Sidebar from "../../componants/common/Sidebar";
 import TaskTable from "../../componants/doctor/DoctorHome";
 import UsersTable from "../../componants/admin/UsersTable";
+import AppointmentTable from "../../componants/admin/AppointmentsTable";
 
-const UserManagement = () => {
+const AppointmentManagement = () => {
   return (
     <div className="bg-gray-200 min-h-screen flex justify-center items-start px-2 sm:px-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-[1600px] overflow-hidden">
@@ -15,7 +16,7 @@ const UserManagement = () => {
            
           <div className="bg-gray-200 w-full p-4">
             <Navbar/>
-            <UsersTable />
+            <AppointmentTable />
           </div>
         </div>
       </div>
@@ -24,4 +25,4 @@ const UserManagement = () => {
   );
 };
 
-export default UserManagement;
+export default AppointmentManagement;

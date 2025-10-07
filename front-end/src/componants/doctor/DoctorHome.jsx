@@ -3,8 +3,9 @@ import axios from "axios";
 import { getAllAppmnt } from "../../features/doctor/appointmentSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Appointments from "./Appointments";
+import { getAllDoctors } from "../../features/auth/authSlice";
 
-const TaskTable = () => {
+const DoctorHome = () => {
   const { allAppmnt } = useSelector((state) => state.appointment);
   const { allDoctors } = useSelector((state) => state.auth);
  
@@ -18,38 +19,16 @@ const TaskTable = () => {
 
   useEffect(() => {
     dispatch(getAllAppmnt());
+    dispatch(getAllDoctors())
   }, [dispatch]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post(
-        "http://localhost:3000/api/tasks",
-        { title, description, dueDate },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      alert("Task created successfully");
-      setTitle("");
-      setDescription("");
-      setDueDate("");
-      setShowForm(false);
-    } catch (err) {
-      console.error(err.message);
-      alert("Error creating task");
-    }
-  };
+ 
 
   return (
     <div className="flex h-screen">
       {/* Left side (70%) */}
-      <div className="w-[70%] bg-gray-200 p-4">
-        <div className="mt-4 m-5 flex flex-col md:flex-row justify-between gap-3 md:gap-0">
-          <h2 className="text-lg font-semibold">My Tasks</h2>
-        </div>
+      <div className="w-full bg-gray-200 p-4">
+        
 
        <div className="bg-gradient-to-b from-blue-700 to-sky-600 h-[230px] relative rounded-xl overflow-hidden shadow-md mt-4 mx-5 flex items-center">
   {/* Left text */}
@@ -98,60 +77,17 @@ const TaskTable = () => {
     <h1 className="text-gray-900 text-3xl font-bold"> {allAppmnt.filter((appmnt) => appmnt.status === "pending").length}</h1>
   </div>
 </div>
-
-
-
-        {/* Task Form */}
-        {showForm && (
-          <div className="m-5 p-5 bg-gray-100 rounded-xl shadow-lg">
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col gap-4 w-full max-w-md"
-            >
-              <input
-                type="text"
-                placeholder="Task Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="p-2 border rounded-lg w-full"
-                required
-              />
-              <input
-                type="text"
-                placeholder="Task Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="p-2 border rounded-lg w-full"
-                required
-              />
-              <input
-                type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-                className="p-2 border rounded-lg w-full"
-                required
-              />
-              <button
-                type="submit"
-                className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600"
-              >
-                Save
-              </button>
-            </form>
-          </div>
-        )}
-
         {/* Task List */}
         <Appointments />
       </div>
 
       {/* Right side (30%) */}
-      <div className="w-[30%] bg-gray-400 p-4">
+      {/* <div className="w-[30%] bg-gray-400 p-4">
         <h1 className="text-xl font-bold">Right Section</h1>
         <p>This takes up 30% of the screen.</p>
-      </div>
+      </div> */}
     </div>
   );
 };
 
-export default TaskTable;
+export default DoctorHome;

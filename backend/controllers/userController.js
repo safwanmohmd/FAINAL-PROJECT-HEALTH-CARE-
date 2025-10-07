@@ -51,6 +51,9 @@ export const login = async (req, res) => {
 
 
   const userExist = await userModel.findOne({ name }).populate("specialization", "name");
+    if (!userExist) {
+    return res.status(404).json({ success: false, message: "user not found" })
+  }
  if (
   userExist.role === "doctor" &&
   (userExist.approved === "pending" || userExist.approved === "rejected")
@@ -60,9 +63,7 @@ export const login = async (req, res) => {
     message: "Doctor role approval is pending or rejected. Please wait for admin's action."
   });
 }
-  if (!userExist) {
-    return res.status(404).json({ success: false, message: "user not found" })
-  }
+
 
   const verifyed = await bcrypt.compare(password, userExist.password)
   if (!verifyed) {
@@ -134,7 +135,7 @@ export const getAllDoctors = async (req, res) => {
 export const getUsers = async (req, res) => {
 
 
-  const users = await userModel.find({})
+  const users = await userModel.find({}).populate("specialization", "name")
 
   res.json({ message: "users", users })
 } 

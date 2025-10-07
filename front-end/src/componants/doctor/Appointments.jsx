@@ -1,26 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { editApmntById, getAllAppmnt } from "../../features/doctor/appointmentSlice";
+import { editApmntById, getAllAppmnt, getDocAppmnt } from "../../features/doctor/appointmentSlice";
 import { createPrescription } from "../../features/doctor/prescriptionSlice";
 
 const Appointments = () => {
-  const { allAppmnt, loading } = useSelector((state) => state.appointment);
+  const { docAppmnt, loading } = useSelector((state) => state.appointment);
   const dispatch = useDispatch();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmModalOpen, setConfirmIsModalOpen] = useState(false);
   const [selectedAppmnt, setSelectedAppmnt] = useState(null);
   const [prescription, setPrescription] = useState("");
 
   const doctor = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
-    dispatch(getAllAppmnt());
+    dispatch(getDocAppmnt());
   }, [dispatch]);
 
   const handleApprove = (appmnt) => {
     setSelectedAppmnt(appmnt);
     setPrescription(appmnt.prescription || "");
     setIsModalOpen(true);
+  };
+  const handleReject = (appmnt) => {
+    setSelectedAppmnt(appmnt);
+    setPrescription(appmnt.prescription || "");
+    setConfirmIsModalOpen(true);
   };
 
   const handleSavePrescription = async () => {
@@ -37,9 +43,24 @@ const Appointments = () => {
       await dispatch(editApmntById({id :selectedAppmnt._id, updates: {status : "completed"}}))
   
       // Refresh appointments after saving
-      dispatch(getAllAppmnt());
+      dispatch(getDocAppmnt());
 
       setIsModalOpen(false);
+      setSelectedAppmnt(null);
+      setPrescription("");
+    } catch (error) {
+      console.error(error);
+      alert("Error saving prescription");
+    }
+  };
+  const confirmRejection = async () => {
+    try {
+      await dispatch(editApmntById({id :selectedAppmnt._id, updates: {status : "rejected"}}))
+  
+      // Refresh appointments after saving
+      dispatch(getDocAppmnt());
+
+      setConfirmIsModalOpen(false);
       setSelectedAppmnt(null);
       setPrescription("");
     } catch (error) {
@@ -56,7 +77,7 @@ const Appointments = () => {
           <div className="p-5 text-center text-gray-600 font-medium">
             Loading...
           </div>
-        ) : allAppmnt.length === 0 ? (
+        ) : docAppmnt.length === 0 ? (
           <div className="p-5 text-center text-gray-600 font-medium">
             No appointments found.
           </div>
@@ -67,13 +88,14 @@ const Appointments = () => {
                 <th className="px-6 py-3">Doctor</th>
                 <th className="px-6 py-3">Patient</th>
                 <th className="px-6 py-3">Specialization</th>
+                <th className="px-6 py-3">Description</th>
                 <th className="px-6 py-3">Date</th>
                 <th className="px-6 py-3">Status</th>
                 <th className="px-6 py-3">Action</th>
               </tr>
             </thead>
             <tbody>
-              {allAppmnt.map((appmnt) => (
+              {docAppmnt.map((appmnt) => (
                 <tr
                   key={appmnt._id}
                   className={`${
@@ -90,6 +112,7 @@ const Appointments = () => {
                       {appmnt.description}
                     </div>
                   </td>
+                  <td className="px-6 py-4">{appmnt.date}</td>
                   <td className="px-6 py-4">{appmnt.status}</td>
                   <td className="px-6 py-4">
                     <button
@@ -99,7 +122,7 @@ const Appointments = () => {
                       Approve
                     </button>
                     <button
-                      onClick={() => handleApprove(appmnt)}
+                      onClick={() => handleReject(appmnt)}
                       className="m-2 bg-red-300 text-white px-4 py-2 rounded hover:underline"
                     >
                       Reject
@@ -141,6 +164,36 @@ const Appointments = () => {
                 className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
               >
                 Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {isConfirmModalOpen && selectedAppmnt && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-xl">
+            <h2 className="text-xl font-bold mb-4">Appointment Details</h2>
+            <p><strong>Doctor:</strong> {selectedAppmnt.doctor_id.name}</p>
+            <p><strong>Patient:</strong> {selectedAppmnt.patient_id.name}</p>
+            <p><strong>Specialization:</strong> {selectedAppmnt.specialization.name}</p>
+            <p><strong>Date:</strong> {selectedAppmnt.description}</p>
+
+           
+
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmRejection}
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              >
+                Confirm Rejection
               </button>
             </div>
           </div>

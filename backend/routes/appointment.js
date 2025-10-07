@@ -1,13 +1,14 @@
 import express from 'express'
 
-import { isAdmin, isLogged } from '../middlewares/auth.js'
-import { createAppointment, deleteAppointmentById, editAppointmentById, getAllAppointments, getMyAppointments } from '../controllers/appmntController.js'
+import { isAdmin, isDoctor, isLogged } from '../middlewares/auth.js'
+import { createAppointment, deleteAppointmentById, editAppointmentById, getAllAppointments, getDocAppointments, getMyAppointments } from '../controllers/appmntController.js'
 const router = express.Router()
 
 router.get('/',isLogged,  getAllAppointments)
 router.get('/getmy',isLogged,  getMyAppointments)
+router.get('/getdoc',isLogged,  getDocAppointments)
 router.post('/',isLogged, createAppointment)
-router.patch('/:id', editAppointmentById)
-router.delete('/:id',isLogged, deleteAppointmentById)
+router.patch('/:id',isLogged,isDoctor, editAppointmentById)
+router.delete('/:id',isLogged,isDoctor, deleteAppointmentById)
 
 export default router

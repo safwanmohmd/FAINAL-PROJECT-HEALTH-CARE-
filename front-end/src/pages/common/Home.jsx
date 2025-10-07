@@ -29,23 +29,25 @@ const App = () => {
             semper ornare sagittis. Molestie ridiculus elit sagittis, mol
           </p>
           <div className="flex space-x-4">
-            <button className="bg-teal-500 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:bg-teal-600 transition-colors">
+            <button onClick={()=> navigate("/bookappointment")} className="bg-teal-500 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:bg-teal-600 transition-colors">
               Make An Appointment
             </button>
             {user && (user.role == "patient" ? (
-              <button className="bg-transparent text-teal-500 font-semibold py-3 px-6 rounded-full border border-teal-500 hover:bg-teal-50 hover:text-teal-600 transition-colors">
+              <button onClick={()=> navigate("/patient/dashboard")} className="bg-transparent text-teal-500 font-semibold py-3 px-6 rounded-full border border-teal-500 hover:bg-teal-50 hover:text-teal-600 transition-colors">
                 Patient Dashboard
               </button>
             ) : user.role == "admin" ? (
-              <> <button onClick={()=> navigate("/dashboard")} className="bg-transparent text-teal-500 font-semibold py-3 px-6 rounded-full border border-teal-500 hover:bg-teal-50 hover:text-teal-600 transition-colors">
+              <> <button onClick={()=> navigate("/admin/dashboard")} className="bg-transparent text-teal-500 font-semibold py-3 px-6 rounded-full border border-teal-500 hover:bg-teal-50 hover:text-teal-600 transition-colors">
                 Admin Dashboard
               </button>
-               <button onClick={()=>navigate("/patient")} className="bg-transparent text-teal-500 font-semibold py-3 px-6 rounded-full border border-teal-500 hover:bg-teal-50 hover:text-teal-600 transition-colors">
+               <button onClick={()=>navigate("/doctor/dashboard")} className="bg-transparent text-teal-500 font-semibold py-3 px-6 rounded-full border border-teal-500 hover:bg-teal-50 hover:text-teal-600 transition-colors">
                 Doctors Dashboard
+              </button><button onClick={()=> navigate("/patient/dashboard")} className="bg-transparent text-teal-500 font-semibold py-3 px-6 rounded-full border border-teal-500 hover:bg-teal-50 hover:text-teal-600 transition-colors">
+                Patient Dashboard
               </button></>
              
             ) : (
-              <button onClick={()=>navigate("/patient")} className="bg-transparent text-teal-500 font-semibold py-3 px-6 rounded-full border border-teal-500 hover:bg-teal-50 hover:text-teal-600 transition-colors">
+              <button onClick={()=>navigate("/doctor/dashboard")} className="bg-transparent text-teal-500 font-semibold py-3 px-6 rounded-full border border-teal-500 hover:bg-teal-50 hover:text-teal-600 transition-colors">
                 Doctors Dashboard
               </button>
             ))}

@@ -30,7 +30,7 @@ export const loginUser = createAsyncThunk(
 );
 export const getAllDoctors = createAsyncThunk(
   "auth/doctors",
-  async (data) => {
+  async () => {
     try {
       const response = await axiosInstance.get("/auth/doctors");
     
@@ -108,12 +108,13 @@ const authSlice = createSlice({
            
           toast.success(action.payload.message);
           if(state.user.role == "admin"){
- window.location.href = "/dashboard";
+ window.location.href = "/doctor/dashboard";
           } else{
              window.location.href = "/";
           }
           // backend success
         } else {
+       
           state.error = action.payload.message;
           toast.error(action.payload.message); // backend error
         }
