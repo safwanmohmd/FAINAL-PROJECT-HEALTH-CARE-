@@ -22,9 +22,9 @@ const UserManagement = () => {
         {/* Main content */}
         <div className="flex-1 bg-gray-200 p-4 min-w-0 overflow-visible relative">
 
-          {/* Mobile Navbar with pure Tailwind toggle */}
+  =
           <div className="md:hidden relative">
-            {/* Checkbox hack for toggle */}
+       
             <input id="menu-toggle" type="checkbox" className="hidden peer" />
             <Navbar />
             

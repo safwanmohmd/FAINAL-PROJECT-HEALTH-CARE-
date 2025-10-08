@@ -10,7 +10,7 @@ const Register = () => {
 
   // Redux state
   const { loading, error, user } = useSelector((state) => state.auth);
-  const { all } = useSelector((state) => state.specialization);
+  const { allSpcl } = useSelector((state) => state.specialization);
 
   // Local form state
   const [name, setName] = useState("");
@@ -136,7 +136,7 @@ const Register = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
                 >
                   <option value="">Select specialization</option>
-                  {all.map((x) => (
+                  {allSpcl.map((x) => (
                     <option key={x._id} value={x._id}>
                       {x.name}
                     </option>
