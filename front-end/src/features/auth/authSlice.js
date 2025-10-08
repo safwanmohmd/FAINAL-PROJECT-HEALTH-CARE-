@@ -32,7 +32,13 @@ export const getAllDoctors = createAsyncThunk(
   "auth/doctors",
   async () => {
     try {
-      const response = await axiosInstance.get("/auth/doctors");
+          const user = JSON.parse(localStorage.getItem("user"));
+            const token = user?.token;
+      const response = await axiosInstance.get("/auth/doctors", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
     
       return { success: true, ...response.data }; // include success flag
     } catch (error) {
@@ -45,7 +51,13 @@ export const getAllUsers = createAsyncThunk(
   "auth/users",
   async (data) => {
     try {
-      const response = await axiosInstance.get("/auth/users");
+          const user = JSON.parse(localStorage.getItem("user"));
+            const token = user?.token;
+      const response = await axiosInstance.get("/auth/users", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
     
       return { success: true, ...response.data };
        // include success flag
@@ -61,7 +73,13 @@ export const editUserById = createAsyncThunk(
   "auth/editUserById",
   async ({ id, updates }) => {
     try {
-      const response = await axiosInstance.patch(`/auth/${id}`, updates);
+          const user = JSON.parse(localStorage.getItem("user"));
+            const token = user?.token;
+      const response = await axiosInstance.patch(`/auth/${id}`, updates , {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
       return { success: true, user: response.data.user, message: response.data.message };
     } catch (error) {
       return { success: false, message: error.response?.data?.message || error.message };

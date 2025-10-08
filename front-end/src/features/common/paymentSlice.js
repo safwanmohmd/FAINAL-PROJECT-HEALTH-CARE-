@@ -17,11 +17,11 @@ export const createPayment = createAsyncThunk(
                 }
             });
       
-           const paymentId = response.data.newPayment._id; // ✅ only store the _id
+           const paymentId = response.data.newPayment._id; 
       localStorage.setItem("pendingPaymentId", paymentId);
-            return { success: true, ...response.data }; // include success flag
+            return { success: true, ...response.data };
         } catch (error) {
-            // Return error as data instead of throwing
+           
             return { success: false, message: error.response?.data?.message || error.message };
         }
     }
@@ -33,7 +33,13 @@ export const editPaymentById = createAsyncThunk(
     "auth/editPaymentById",
     async ({ id, updates }) => {
         try {
-            const response = await axiosInstance.patch(`/payment/${id}`, updates);
+              const user = JSON.parse(localStorage.getItem("user"));
+            const token = user?.token;
+            const response = await axiosInstance.patch(`/payment/${id}`, updates, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             return { success: true, user: response.data.user, message: response.data.message };
         } catch (error) {
             return { success: false, message: error.response?.data?.message || error.message };
@@ -61,11 +67,30 @@ export const getAllPayment = createAsyncThunk(
     }
   }
 );
+export const getMyPayment = createAsyncThunk(
+  "payment/getmy",
+  async () => {
+    try {
+        const user = JSON.parse(localStorage.getItem("user"));
+            const token = user?.token;
+      const response = await axiosInstance.get("/payment/getmy", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+      // backend returns { message: "...", specializations: [...] }
+           return { success: true, ...response.data };
+    } catch (error) {
+      return { success: false, message: error.response?.data?.message || error.message };
+    }
+  }
+);
 
 const paymentSlice = createSlice({
   name: "specialization",
   initialState: {
     allPayments: [],
+    myPayments : [],
     selected: null, // for single specialization if needed
     loading: false,
     error: null,
@@ -121,6 +146,23 @@ const paymentSlice = createSlice({
                       if (action.payload.success) {
       
       
+                          toast.success(action.payload.message); // backend success
+                      } else {
+                          state.error = action.payload.message;
+                          toast.error(action.payload.message); // backend error
+                      }
+                  })
+
+
+       .addCase(getMyPayment.pending, (state) => {
+                      state.loading = true;
+                      state.error = null;
+                  })
+                  .addCase(getMyPayment.fulfilled, (state, action) => {
+                      state.loading = false;
+                      if (action.payload.success) {
+      
+                        state.myPayments = action.payload.payments
                           toast.success(action.payload.message); // backend success
                       } else {
                           state.error = action.payload.message;

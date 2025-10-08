@@ -86,7 +86,13 @@ export const editApmntById = createAsyncThunk(
     "auth/editApmntById",
     async ({ id, updates }) => {
         try {
-            const response = await axiosInstance.patch(`/appmnt/${id}`, updates);
+                const user = JSON.parse(localStorage.getItem("user"));
+            const token = user?.token;
+            const response = await axiosInstance.patch(`/appmnt/${id}`, updates, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             return { success: true, user: response.data.user, message: response.data.message };
         } catch (error) {
             return { success: false, message: error.response?.data?.message || error.message };
@@ -248,10 +254,10 @@ const appmntSlice = createSlice({
                 state.loading = false;
                 if (action.payload.success) {
                     console.log(action.payload);
-                    toast.success(action.payload.url);
+                    toast.success("redirecting into payment gateway");
 
                     if (action.payload.url) {
-                        // window.location.href = action.payload.url; // 🔁 redirect to Stripe checkout
+                        window.location.href = action.payload.url; // 🔁 redirect to Stripe checkout
                     }
                 } else {
                     state.error = action.payload.message;

@@ -31,7 +31,13 @@ export const editSpclById = createAsyncThunk(
     "auth/editSpclById",
     async ({ id, updates }) => {
         try {
-            const response = await axiosInstance.patch(`/specialization/${id}`, updates);
+              const user = JSON.parse(localStorage.getItem("user"));
+            const token = user?.token;
+            const response = await axiosInstance.patch(`/specialization/${id}`, updates , {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             return { success: true, user: response.data.user, message: response.data.message };
         } catch (error) {
             return { success: false, message: error.response?.data?.message || error.message };
@@ -45,7 +51,13 @@ export const getAllSpcl = createAsyncThunk(
   "specialization/getAll",
   async () => {
     try {
-      const response = await axiosInstance.get("/specialization");
+          const user = JSON.parse(localStorage.getItem("user"));
+            const token = user?.token;
+      const response = await axiosInstance.get("/specialization", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
       // backend returns { message: "...", specializations: [...] }
            return { success: true, ...response.data };
     } catch (error) {

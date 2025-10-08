@@ -24,7 +24,7 @@ export const getAllPayments = async (req, res) => {
 
 export const getMyPayments = async (req, res) => {
   try {
-    const payments = await paymentModel.find({ user: req.user.id || req.user.userid });
+    const payments = await paymentModel.find({ patient_id: req.user.id}).populate("doctor_id","name").populate("patient_id","name");
     res.status(200).json({
       message: payments.length > 0 ? "Payments fetched" : "No payments found",
       payments, // always an array

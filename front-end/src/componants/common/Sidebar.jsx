@@ -21,7 +21,7 @@ const Sidebar = () => {
   const isPatient = role === "patient";
 
   return (
-    <div className="w-72 bg-white h-screen shadow-md p-3 flex flex-col text-sm">
+    <div className="w-52 h-screen bg-white shadow-md p-3 flex flex-col text-sm">
       <h2 className="mt-3 mb-4 text-xl font-bold text-center">
         <i className="bi bi-heart-pulse"></i>{" "}
         <span className="text-blue-700">Health</span>
@@ -112,6 +112,17 @@ const Sidebar = () => {
                 Prescriptions
               </button>
             </li>
+            <li>
+              <button
+                onClick={() => {
+                 
+                  navigate("/patient/payments");
+                }}
+               className="flex items-center gap-2 w-full px-2 py-1 rounded-lg transition text-sm hover:bg-gray-100 text-gray-600 " >
+                <i className="bi bi-file-medical text-base"></i>
+                payment History
+              </button>
+            </li>
           
           </ul>
         </div>
@@ -173,7 +184,7 @@ const Sidebar = () => {
       )}
 
       {/* General Section */}
-      <div className="mt-auto">
+      <div className="">
         <h3 className="px-2 mb-1 text-gray-400 uppercase text-[10px] font-semibold">
           General
         </h3>

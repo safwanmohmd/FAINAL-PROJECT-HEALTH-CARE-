@@ -39,6 +39,13 @@ const PatientHome = () => {
     <p className="text-white text-sm">
       Appoint the doctors and get finest medical services.
     </p>
+     {/* Book Now Button */}
+    <button
+      onClick={() => window.location.href = "/bookappointment"} 
+      className="mt-1.5 bg-white text-blue-700 font-semibold px-4 py-2 rounded-lg shadow-md hover:bg-gray-100 transition"
+    >
+      Book Now
+    </button>
   </div>
 
   {/* Right illustration */}
@@ -77,8 +84,13 @@ const PatientHome = () => {
     <h1 className="text-gray-900 text-3xl font-bold"> {myAppmnt.filter((appmnt) => appmnt.status === "pending").length}</h1>
   </div>
 </div>
-        {/* Task List */}
-        <Appointments />
+       {/* Task List */}
+<div className="mt-6 bg-white rounded-2xl shadow-md p-4 mx-5">
+  <h2 className="text-lg font-semibold text-gray-700 mb-3">My Appointments</h2>
+  <div className="max-h-[400px] overflow-y-auto overflow-x-auto">
+    <Appointments />
+  </div>
+</div>
       </div>
 
       {/* Right side (30%) */}

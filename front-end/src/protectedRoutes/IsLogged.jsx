@@ -7,9 +7,7 @@ const isLogged = ({children}) => {
         return <Navigate to={"/login"} replace/>
     }
     return children
-  return (
-    <div>AdminRoutes</div>
-  )
+
 }
 
 export default isLogged

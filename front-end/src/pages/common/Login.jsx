@@ -44,6 +44,7 @@ const Login = () => {
           <div className="flex justify-between">
             <h3>brand name</h3>
             <button
+            onClick={()=> navigate("/register")}
               className="bg-white w-[100px] shadow-md text-black font-semibold hover:bg-blue-600 py-3 rounded-lg transition duration-200"
               type="submit"
             >

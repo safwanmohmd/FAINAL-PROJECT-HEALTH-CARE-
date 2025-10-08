@@ -1,10 +1,19 @@
 
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { editPaymentById } from "../../features/common/paymentSlice";
 
 const PaymentFailed = () => {
-
+const dispatch = useDispatch()
   const navigate = useNavigate();
-
+   const paymentId = localStorage.getItem("pendingPaymentId"); // string ID
+useEffect(()=>{
+  if (paymentId) {
+    dispatch(editPaymentById({ id: paymentId, updates: { status: "failed" } }));
+    localStorage.removeItem("pendingPaymentId");
+  }
+},[])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

@@ -1,28 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { editUserById, getAllUsers } from "../../features/auth/authSlice";
-import {
-  editSpclById,
-  getAllSpcl,
-  createSpcl,
-} from "../../features/doctor/specializationSlice";
-import { getAllPayment } from "../../features/common/paymentSlice";
+
+import {  getMyPayment } from "../../features/common/paymentSlice";
 
 const paymentTable = () => {
   const dispatch = useDispatch();
-  const { allUsers, loading } = useSelector((state) => state.auth);
-
-  const {allPayments} = useSelector((state)=> state.payments)
-
-  const [editingId, setEditingId] = useState(null);
-
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-
-
+  const {myPayments} = useSelector((state)=> state.payments)
 
   useEffect(() => {
-        dispatch(getAllPayment())
+        dispatch(getMyPayment())
 
     dispatch(getAllUsers());
   }, [dispatch]);
@@ -41,7 +28,7 @@ const paymentTable = () => {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Doctor
+               Selected Doctor
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 patient
@@ -60,8 +47,8 @@ const paymentTable = () => {
           
 
             {/* Existing payments */}
-            {allPayments.length > 0 ? (
-              allPayments.map((payment, index) => {
+            {myPayments.length > 0 ? (
+              myPayments.map((payment, index) => {
                 const paymentId = payment._id;
                
 
@@ -90,9 +77,20 @@ const paymentTable = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                      
-                        <div className="text-sm text-gray-500">
-                          {payment.status}
-                        </div>
+                     <div
+  className={`text-sm text-white px-2 py-1 rounded ${
+    payment.status === "success"
+      ? "bg-green-500"
+      : payment.status === "pending"
+      ? "bg-yellow-400"
+      : payment.status === "failed"
+      ? "bg-red-500"
+      : "bg-gray-400"
+  }`}
+>
+  {payment.status}
+</div>
+
                   
                     </td>
 
