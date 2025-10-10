@@ -4,8 +4,9 @@ import { getAllAppmnt } from "../../features/doctor/appointmentSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Appointments from "../../componants/doctor/Appointments";
 import Sidebar from "../../componants/common/Sidebar";
+import Navbar from "../../componants/common/Navbar";
 
-const TaskTable = () => {
+const AppointmentHome = () => {
   return (
     <>
      <div className="bg-gray-200 min-h-screen flex justify-center items-start px-2 sm:px-4 overflow-x-hidden">
@@ -45,4 +46,4 @@ const TaskTable = () => {
   );
 };
 
-export default TaskTable;
+export default AppointmentHome;

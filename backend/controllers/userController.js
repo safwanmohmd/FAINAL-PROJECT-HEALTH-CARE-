@@ -1,6 +1,8 @@
 import userModel from "../models/userModel.js"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import appointmentModel from "../models/appointmentModel.js";
+import prescriptionModel from "../models/prescriptions.js";
 
 
 
@@ -131,6 +133,51 @@ export const getAllDoctors = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+
+export const getUserFullHistory = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+   
+    const appointments = await appointmentModel
+      .find({ patient_id: id })
+      .populate("doctor_id", "name email specialization")
+      .populate("specialization", "name")
+
+
+    // 💊 Fetch all prescriptions of this patient
+    const prescriptions = await prescriptionModel
+      .find({ patient_id: id })
+      .populate("doctor_id", "name email specialization")
+      .populate("appointment_id", "status date description")
+   
+
+    // 📦 If both empty
+    
+
+    // ✅ Respond with both
+    res.status(200).json({
+      success: true,
+      message: "User full medical history fetched successfully",
+      data: {
+        appointments,
+        prescriptions
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching full history:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};
+
+
+
 
 export const getUsers = async (req, res) => {
 

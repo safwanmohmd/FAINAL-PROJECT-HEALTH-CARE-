@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Appointments from "../../componants/doctor/Appointments";
 import Sidebar from "../../componants/common/Sidebar";
 import AdminPrescriptionTable from "../../componants/admin/AdminPrescriptionTable";
+import Navbar from "../../componants/common/Navbar";
 
 const AdminPrescriptions = () => {
   return (

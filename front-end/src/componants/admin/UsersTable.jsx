@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { editUserById, getAllUsers } from "../../features/auth/authSlice";
+import { editUserById, getAllUsers, getUserHistory } from "../../features/auth/authSlice";
 import { getAllSpcl } from "../../features/doctor/specializationSlice";
 
 const UsersTable = () => {
   const dispatch = useDispatch();
   const { allUsers, loading } = useSelector((state) => state.auth);
    const { allSpcl } = useSelector((state) => state.specialization);
+   const { userHistory } = useSelector((state) => state.auth);
 
   const [editingId, setEditingId] = useState(null);
   const [name, setName] = useState("");
@@ -15,6 +16,7 @@ const UsersTable = () => {
   const [specialization, setSpecialization] = useState(""); // 🔹 new state
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+    const [isHistoryModalOpen, setHistoryModalOpen] = useState(false);
 
   useEffect(() => {
     dispatch(getAllUsers());
@@ -37,6 +39,18 @@ const UsersTable = () => {
     setRole("");
     setSpecialization("");
   };
+
+
+    const handleViewHistory = async (patientId) => {
+      try {
+     
+        dispatch(getUserHistory(patientId))
+        setHistoryModalOpen(true);
+      } catch (error) {
+        console.error(error);
+        alert("Failed to fetch history");
+      }
+    };
 
   const handleSave = async (id) => {
    await dispatch(
@@ -140,7 +154,7 @@ const UsersTable = () => {
                       <div className="flex-shrink-0 h-10 w-10">
                         <img
                           className="h-10 w-10 rounded-full"
-                          src={`https://i.pravatar.cc/150?img=${index + 1}`}
+                          src="../../../media/doc.png"
                           alt=""
                         />
                       </div>
@@ -281,6 +295,13 @@ const UsersTable = () => {
                             Approve
                           </button>
                           <button
+                            onClick={() => handleViewHistory(userId)}
+                            className="px-4 py-2 text-white rounded-lg font-semibold bg-violet-400"
+                      
+                          >
+                            View History
+                          </button>
+                          <button
                             onClick={() => handleReject(userId)}
                             className={`px-4 py-2 text-white rounded-lg font-semibold ${
                               user.approved === "rejected"
@@ -310,6 +331,52 @@ const UsersTable = () => {
           </tbody>
         </table>
       </div>
+
+
+
+        {isHistoryModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/60">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-3xl overflow-y-auto max-h-[90vh]">
+            <h2 className="text-2xl font-bold mb-4">Patient History</h2>
+
+            <h3 className="text-lg font-semibold mt-2 mb-1">Appointments</h3>
+            {userHistory.appointments?.length > 0 ? (
+              <ul className="list-disc pl-6 text-gray-700">
+                {userHistory.appointments.map((a) => (
+                  <li key={a._id}>
+                    <strong>{a.status} -- {a.doctor_id.name} -- </strong> - {a.date} ({a.specialization?.name})
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500">No past appointments</p>
+            )}
+
+            <h3 className="text-lg font-semibold mt-4 mb-1">Prescriptions</h3>
+            {userHistory.prescriptions?.length > 0 ? (
+              <ul className="list-disc pl-6 text-gray-700">
+                {userHistory.prescriptions.map((p) => (
+                  <li key={p._id}>
+                    {p.date} -- {p.doctor_id.name} — {p.medicines}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500">No prescriptions found</p>
+            )}
+
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={() => setHistoryModalOpen(false)}
+                className="px-5 py-2 bg-gray-300 rounded hover:bg-gray-400"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
     </div>
   );
 };

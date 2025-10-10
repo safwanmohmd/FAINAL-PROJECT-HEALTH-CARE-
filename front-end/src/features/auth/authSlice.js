@@ -47,6 +47,22 @@ export const getAllDoctors = createAsyncThunk(
     }
   }
 );
+
+export  const getUserHistory =  createAsyncThunk(
+  "auth/history",
+  async (patientId) => {
+    try {
+      const response = await axiosInstance.get(`http://localhost:3000/api/auth/history/${patientId}`);
+     return { success: true, ...response.data };
+       // include success flag
+    } catch (error) {
+      // Return error as data instead of throwing
+      return { success: false, message: error.response?.data?.message || error.message };
+    }
+  }
+);
+
+
 export const getAllUsers = createAsyncThunk(
   "auth/users",
   async (data) => {
@@ -90,7 +106,7 @@ export const editUserById = createAsyncThunk(
 
 const authSlice = createSlice({
   name: "auth",
-  initialState: { user: null, loading: false, error: null, allDoctors:[] ,allUsers :[]},
+  initialState: { user: null, loading: false, error: null, allDoctors:[] ,allUsers :[], userHistory : []},
   reducers: {
     logout: (state) => {
       state.user = null;
@@ -182,6 +198,23 @@ const authSlice = createSlice({
         if (action.payload.success) {
         
      
+          toast.success(action.payload.message); // backend success
+        } else {
+          state.error = action.payload.message;
+          toast.error(action.payload.message); // backend error
+        }
+      }) 
+
+
+      .addCase(getUserHistory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserHistory.fulfilled, (state, action) => {
+        state.loading = false;
+        if (action.payload.success) {
+        
+     state.userHistory = action.payload.data
           toast.success(action.payload.message); // backend success
         } else {
           state.error = action.payload.message;
