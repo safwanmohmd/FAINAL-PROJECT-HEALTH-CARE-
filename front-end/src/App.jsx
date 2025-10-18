@@ -6,9 +6,12 @@ import IsLogged from './protectedRoutes/IsLogged'
 import Register from './pages/common/Register'
 import Home from './pages/common/Home'
 import BookAppointment from './pages/Patient/BookAppointment'
-// import DrAppointments from './pages/doctor/DrAppointments.jsx'
+import DrAppointments from './pages/doctor/DrAppointments'
 import UserManagement from './pages/Admin/UserManagement'
 import DoctorPrescriptions from "./pages/Doctor/DoctorPrescriptions"
+import BookList from './pages/BookList'
+import AddBook from './pages/AddBook'
+import Cart from './pages/Cart'
 import PatientDashboard from './pages/Patient/PatientDashboard'
 import PatientAppmnt from './pages/Patient/PatientAppmnt'
 import PatientPrescriptions from './pages/Patient/PatientPrescriptions'
@@ -38,7 +41,7 @@ const App = () => {
 
         <Route path='/doctor/dashboard' element={ <IsLogged><IsDoctor> <DoctorDashboard/></IsDoctor> </IsLogged> } />
         <Route path='/doctor/prescriptions' element={<IsLogged >  <DoctorPrescriptions/> </IsLogged>} />
-        {/* <Route path='/doctor/appointments' element={ <IsLogged ><IsDoctor><DrAppointments/></IsDoctor> </IsLogged> } /> */}
+        <Route path='/doctor/appointments' element={ <IsLogged ><IsDoctor><DrAppointments/></IsDoctor> </IsLogged> } />
 
 
         <Route path='/admin/dashboard' element={ <IsLogged> <IsAdmin><DoctorDashboard/></IsAdmin> </IsLogged> } />
