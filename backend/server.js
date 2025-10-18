@@ -28,7 +28,7 @@ mongoose.connect(process.env.mongoUri).then(
 
 
 //routes
-app.use(cors({origin:"https://fainal-project-health-care-51js-lac35ry0z.vercel.app/"}));
+app.use(cors({origin:"fainal-project-health-care-51js.vercel.app"}));
 app.use(express.json())
 app.use('/api/auth',userRouter)
 app.use('/api/appmnt', appointmentRoutes)
