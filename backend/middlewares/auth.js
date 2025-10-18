@@ -16,7 +16,7 @@ export const isLogged = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // make sure .env uses JWT_SECRET
+    const decoded = jwt.verify(token, process.env.jwt_secret); // make sure .env uses JWT_SECRET
 
     if (!decoded) {
       return res.status(403).json({ message: "Invalid token" });
