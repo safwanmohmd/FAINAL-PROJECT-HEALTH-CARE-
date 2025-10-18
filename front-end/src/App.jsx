@@ -6,7 +6,7 @@ import IsLogged from './protectedRoutes/IsLogged'
 import Register from './pages/common/Register'
 import Home from './pages/common/Home'
 import BookAppointment from './pages/Patient/BookAppointment'
-import DrAppointments from './pages/doctor/DrAppointments'
+import DrAppointments from './pages/doctor/DrAppointments.jsx'
 import UserManagement from './pages/Admin/UserManagement'
 import DoctorPrescriptions from "./pages/Doctor/DoctorPrescriptions"
 import PatientDashboard from './pages/Patient/PatientDashboard'
