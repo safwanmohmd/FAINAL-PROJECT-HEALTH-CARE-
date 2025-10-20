@@ -93,7 +93,7 @@ const Appointments = () => {
   };
 
   return (
-    <div className="m-5 bg-white shadow-lg rounded-xl overflow-hidden">
+    <div className=" bg-white shadow-lg rounded-xl overflow-hidden">
       <div className="p-5 border-b bg-gray-50 flex items-center justify-between">
         <h2 className="text-xl font-bold text-gray-700">Appointments</h2>
       </div>

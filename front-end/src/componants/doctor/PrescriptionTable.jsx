@@ -25,7 +25,7 @@ const PrescriptionTable = () => {
   };
 
   return (
-    <div className="m-4 sm:m-6">
+    <div className="">
       <div className="relative overflow-x-auto shadow-md rounded-xl">
         {loading ? (
           <div className="p-6 text-center text-gray-600 font-medium">
