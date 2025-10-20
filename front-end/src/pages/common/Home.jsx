@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
+import ChatBot from "../../componants/common/ChatBot";
 const App = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
@@ -94,6 +94,7 @@ const App = () => {
             />
           </div>
         </div>
+        <ChatBot/>
       </div>
     </div>
   );
