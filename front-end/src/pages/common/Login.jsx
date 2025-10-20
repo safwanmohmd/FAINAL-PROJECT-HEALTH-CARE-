@@ -42,7 +42,8 @@ const Login = () => {
         {/* Right Section - Login Form */}
         <div className="w-1/2 p-10 flex flex-col bg-gray-50 justify-center">
           <div className="flex justify-between">
-            <h3>brand name</h3>
+            <h3 className="text-xl" >  <span className="text-blue-700">Health</span>
+        <span className="text-green-500">Care</span></h3>
             <button
             onClick={()=> navigate("/register")}
               className="bg-white w-[100px] shadow-md text-black font-semibold hover:bg-blue-600 py-3 rounded-lg transition duration-200"
