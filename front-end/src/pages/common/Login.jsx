@@ -29,7 +29,7 @@ const Login = () => {
         {/* Left Section - Logo */}
         <div className="w-1/2 flex flex-col justify-center items-center bg-blue-500 rounded-l-2xl p-8">
          <img
-            src="../../media/doc.png"
+            src="../../../public/doc.png"
             alt="Doctor"
             className="relative max-w-[350px] md:max-w-[400px] object-contain z-10 mb-4"
           />
