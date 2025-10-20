@@ -32,7 +32,7 @@ const PatientPrescriptions = () => {
           </div>
 
           {/* Desktop content */}
-          <div className="pr-4 sm:pr-6 md:pr-8 mb-28 overflow-visible">
+          <div className=" mb-28 overflow-visible">
                  <PatientPrescriptionTable />
           </div>
 
