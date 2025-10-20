@@ -8,7 +8,7 @@ import AppointmentTable from "../../componants/admin/AppointmentsTable";
 const AppointmentManagement = () => {
   return (
 
- <div className="bg-gray-200 min-h-screen flex justify-center items-start px-2 sm:px-4 overflow-x-hidden">
+ <div className="bg-gray-200 min-h-screen flex justify-center items-start  overflow-x-hidden">
       
       {/* White card container */}
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-full md:max-w-[1600px] flex overflow-hidden">
