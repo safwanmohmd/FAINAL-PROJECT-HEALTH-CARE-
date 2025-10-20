@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  getMyPrescriptions,
+  deletePrescription,
+  createPrescription,
+} from "../../features/doctor/prescriptionSlice";
 import { getAllAppmnt } from "../../features/doctor/appointmentSlice";
-import axios from "axios";
-import { createPrescription, deletePrescription, getAllPrescriptions, getMyPrescriptions } from "../../features/doctor/prescriptionSlice";
 import toast from "react-hot-toast";
 
 const PatientPrescriptionTable = () => {
@@ -13,88 +16,84 @@ const PatientPrescriptionTable = () => {
   const [selectedAppmnt, setSelectedAppmnt] = useState(null);
   const [prescription, setPrescription] = useState("");
 
-  const doctor = localStorage.getItem("user");
-
   useEffect(() => {
     dispatch(getMyPrescriptions());
-    console.log(myPresc);
-  }, []);
+  }, [dispatch]);
 
   const handleDelete = (id) => {
-    
-   dispatch(deletePrescription(id))
+    dispatch(deletePrescription(id));
+    toast.success("Prescription deleted successfully");
   };
 
   const handleSavePrescription = async () => {
     try {
-    const doctor = JSON.parse(localStorage.getItem("user"));
+      const doctor = JSON.parse(localStorage.getItem("user"));
+      const newPresc = {
+        doctor_id: doctor._id,
+        medicines: prescription,
+        patient_id: selectedAppmnt?.patient_id?._id,
+      };
 
-const newPresc = {
-  
-  doctor_id: doctor._id, // or doctor.id depending on your schema
-  medicines: prescription,
-  patient_id: selectedAppmnt.patient_id._id,
-};
-
-dispatch(createPrescription(newPresc));
-      // Refresh PatientPrescriptionTable after saving
+      dispatch(createPrescription(newPresc));
       dispatch(getAllAppmnt());
       setIsModalOpen(false);
+      toast.success("Prescription saved");
     } catch (error) {
       console.error(error);
-      alert("Error saving prescription");
+      toast.error("Error saving prescription");
     }
   };
 
   return (
-    <div>
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-4 m-5">
+    <div className="px-3 sm:px-6 py-4">
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg bg-white">
         {loading ? (
-          <div className="p-5 text-center text-gray-600 font-medium">
+          <div className="p-6 text-center text-gray-600 font-medium">
             Loading...
           </div>
         ) : myPresc.length === 0 ? (
-          <div className="p-5 text-center text-gray-600 font-medium">
-            No PatientPrescriptionTable found.
+          <div className="p-6 text-center text-gray-600 font-medium">
+            No prescriptions found.
           </div>
         ) : (
-          <table className="w-full text-sm text-left text-gray-500">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+          <table className="w-full text-sm text-left text-gray-500 min-w-[600px]">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-100">
               <tr>
-                <th className="px-6 py-3">Doctor</th>
-                <th className="px-6 py-3">Patient</th>
-                <th className="px-6 py-3">Specialization</th>
-                <th className="px-6 py-3">Date</th>
-                <th className="px-6 py-3">Status</th>
-                <th className="px-6 py-3">Action</th>
+                <th className="px-4 sm:px-6 py-3">Doctor</th>
+                <th className="px-4 sm:px-6 py-3">Patient</th>
+                <th className="px-4 sm:px-6 py-3">Specialization</th>
+                <th className="px-4 sm:px-6 py-3">Medicines</th>
+                <th className="px-4 sm:px-6 py-3">Status</th>
+                <th className="px-4 sm:px-6 py-3 text-center">Action</th>
               </tr>
             </thead>
             <tbody>
               {myPresc.map((presc) => (
                 <tr
                   key={presc._id}
-                  className={`${
+                  className={`border-b transition-colors ${
                     presc.status === "completed"
-                      ? "bg-green-300 hover:bg-green-400"
-                      : "bg-white"
-                  } border-b hover:bg-gray-50`}
+                      ? "bg-green-100 hover:bg-green-200"
+                      : "hover:bg-gray-50"
+                  }`}
                 >
-                  <td className="px-6 py-4">{presc.doctor_id.name}</td>
-                  <td className="px-6 py-4">{presc.patient_id.name}</td>
-                  <td className="px-6 py-4">test</td>
-                  <td className="px-6 py-4 max-h-20 w-64">
-                    <div className="max-h-20 overflow-auto break-words">
+                  <td className="px-4 sm:px-6 py-3 font-medium text-gray-800">
+                    {presc.doctor_id?.name || "N/A"}
+                  </td>
+                  <td className="px-4 sm:px-6 py-3">{presc.patient_id?.name || "N/A"}</td>
+                  <td className="px-4 sm:px-6 py-3">Test</td>
+                  <td className="px-4 sm:px-6 py-3 max-h-24 w-64">
+                    <div className="max-h-24 overflow-auto break-words">
                       {presc.medicines}
                     </div>
                   </td>
-                  <td className="px-6 py-4">{presc.status}</td>
-                  <td className="px-6 py-4">
-                    
+                  <td className="px-4 sm:px-6 py-3 capitalize">{presc.status}</td>
+                  <td className="px-4 sm:px-6 py-3 text-center">
                     <button
                       onClick={() => handleDelete(presc._id)}
-                      className="m-2 bg-red-300 text-white px-4 py-2 rounded hover:underline"
+                      className="bg-red-500 hover:bg-red-600 text-white px-3 sm:px-4 py-2 rounded-md transition text-xs sm:text-sm"
                     >
-                      delete
+                      Delete
                     </button>
                   </td>
                 </tr>
@@ -103,8 +102,6 @@ dispatch(createPrescription(newPresc));
           </table>
         )}
       </div>
-
-   
     </div>
   );
 };
