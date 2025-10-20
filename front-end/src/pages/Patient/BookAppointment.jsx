@@ -66,7 +66,7 @@ dispatch(createPayment(newPayment))
         <div className="w-1/2 flex flex-col justify-center items-center bg-gradient-to-r from-blue-500 to-blue-400 p-6 relative">
           <div className="absolute w-[400px] h-[400px] bg-teal-500 rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-30 hidden md:block"></div>
           <img
-            src="../../../public/doc.png"
+            src="/doc.png"
             alt="Doctor"
             className="relative max-w-[350px] md:max-w-[400px] object-contain z-10 mb-4"
           />

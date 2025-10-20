@@ -44,7 +44,7 @@ const DoctorHome = () => {
   {/* Right illustration */}
   <div className="absolute right-0 bottom-0 h-full">
     <img
-      src="../../../public/doc.png" 
+      src="/doc.png" 
       alt="Doctor"
       className="h-full object-contain"
     />

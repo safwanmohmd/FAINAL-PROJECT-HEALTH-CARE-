@@ -154,7 +154,7 @@ const UsersTable = () => {
                       <div className="flex-shrink-0 h-10 w-10">
                         <img
                           className="h-10 w-10 rounded-full"
-                          src="../../../public/doc.png"
+                          src="/doc.png"
                           alt=""
                         />
                       </div>

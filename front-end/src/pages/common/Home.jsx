@@ -89,7 +89,7 @@ const App = () => {
           <div className="flex items-center justify-center h-[250px] sm:w-[350px] sm:h-[350px] md:w-[400px] md:h-[400px] lg:w-[700px] lg:h-[700px] overflow-hidden">
             <img
               className="absolute w-auto h-[60%] object-cover bottom-10 sm:bottom-16 md:bottom-40 transform scale-100 sm:scale-110 md:scale-125"
-              src="../public/doc.png"
+              src="/doc.png"
               alt="Doctor"
             />
           </div>
