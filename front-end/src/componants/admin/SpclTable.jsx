@@ -64,7 +64,7 @@ const SpclTable = () => {
   });
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-1 bg-gray-100 min-h-screen">
       {/* Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
         {/* Search Bar */}
