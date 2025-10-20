@@ -83,7 +83,7 @@ const App = () => {
         {/* Right side: Doctor image with the circular background */}
         <div className="w-full md:w-1/2 flex items-center justify-center relative mt-10 md:mt-0">
           {/* Circle background */}
-          <div className="absolute right-1/2 transform translate-x-1/2 top-1/2 -translate-y-1/2 w-[250px] h-[250px] sm:w-[350px] sm:h-[350px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] bg-teal-500 rounded-full hidden md:block"></div>
+         
 
           {/* Doctor image */}
           <div className="relative z-10 flex items-center justify-center w-[250px] h-[250px] sm:w-[350px] sm:h-[350px] md:w-[400px] md:h-[400px] lg:w-[700px] lg:h-[700px] overflow-hidden">
