@@ -17,7 +17,7 @@ export const createStripeUrl = async (req,res)=>{
              quantity: item.quantity || 1,
         }))
         const session = await stripe.checkout.sessions.create({
-            payment_method_types:["card"],line_items:lineItems,mode:"payment",success_url:"http://localhost:5173/payment-success",cancel_url:"http://localhost:5173/payment-failed"
+            payment_method_types:["card"],line_items:lineItems,mode:"payment",success_url:`${process.env.FRONTENT_URL}/payment-success`,cancel_url:`${process.env.FRONTENT_URL}/payment-failed`
         })
         res.json({ id:session.id,url:session.url})
     } catch (error) {

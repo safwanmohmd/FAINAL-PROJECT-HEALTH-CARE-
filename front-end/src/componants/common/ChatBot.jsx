@@ -16,7 +16,7 @@ const ChatBot = () => {
         setMessage("")
 
         try {
-            const res = await axios.post("http://localhost:3000/api/chat", { message })
+            const res = await axios.post(`${import.meta.env.VITE_API_URL}/chat`, { message })
             setChat([...newChat, { sender: "bot", text: res.data.reply }])
         } catch (error) {
             setChat([...newChat, { sender: "bot", text: "Error: " + error.message }])

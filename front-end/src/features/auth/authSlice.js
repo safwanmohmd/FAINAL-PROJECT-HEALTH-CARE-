@@ -52,7 +52,7 @@ export  const getUserHistory =  createAsyncThunk(
   "auth/history",
   async (patientId) => {
     try {
-      const response = await axiosInstance.get(`http://localhost:3000/api/auth/history/${patientId}`);
+      const response = await axiosInstance.get(`/auth/history/${patientId}`);
      return { success: true, ...response.data };
        // include success flag
     } catch (error) {
