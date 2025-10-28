@@ -44,6 +44,18 @@ export const editSpclById = createAsyncThunk(
         }
     }
 );
+export const delSpclById = createAsyncThunk(
+    "auth/delSpclById",
+    async (id) => {
+        try {
+            
+            const response = await axiosInstance.delete(`/specialization/${id}`);
+            return { success: true, user: response.data.user, message: response.data.message };
+        } catch (error) {
+            return { success: false, message: error.response?.data?.message || error.message };
+        }
+    }
+);
 
 
 // Fetch all specializations
@@ -128,6 +140,23 @@ const spclSlice = createSlice({
                       state.error = null;
                   })
                   .addCase(createSpcl.fulfilled, (state, action) => {
+                      state.loading = false;
+                      if (action.payload.success) {
+      
+      
+                          toast.success(action.payload.message); // backend success
+                      } else {
+                          state.error = action.payload.message;
+                          toast.error(action.payload.message); // backend error
+                      }
+                  })
+
+
+       .addCase(delSpclById.pending, (state) => {
+                      state.loading = true;
+                      state.error = null;
+                  })
+                  .addCase(delSpclById.fulfilled, (state, action) => {
                       state.loading = false;
                       if (action.payload.success) {
       

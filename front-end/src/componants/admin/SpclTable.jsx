@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { editUserById, getAllUsers } from "../../features/auth/authSlice";
 import {
   editSpclById,
+  delSpclById,
   getAllSpcl,
   createSpcl,
 } from "../../features/doctor/specializationSlice";
@@ -51,9 +52,11 @@ const SpclTable = () => {
     handleCancel();
   };
 
-  const handleReject = (id) => {
-    dispatch(editUserById({ id, updates: { approved: "rejected" } }));
+  const handleDelete = async (id) => {
+  await  dispatch(delSpclById(id));
+     dispatch(getAllSpcl());
   };
+
 
   // 🔹 Filter + Search
   const filteredSpcl = allSpcl.filter((spcl) => {
@@ -224,12 +227,8 @@ const SpclTable = () => {
                           </button>
 
                           <button
-                            onClick={() => handleReject(spclId)}
-                            className={`px-4 py-2 text-white rounded-lg font-semibold ${
-                              spcl.approved === "rejected"
-                                ? "bg-red-400 cursor-not-allowed"
-                                : "bg-red-600 hover:bg-red-700"
-                            }`}
+                            onClick={() => handleDelete(spclId)}
+                            className="px-4 py-2 text-white rounded-lg font-semibold bg-red-600 hover:bg-red-700"
                           >
                             Delete
                           </button>

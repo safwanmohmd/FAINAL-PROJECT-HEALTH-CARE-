@@ -47,13 +47,23 @@ const Login = () => {
               <span className="text-blue-700">Health</span>
               <span className="text-green-500">Care</span>
             </h3>
-            <button
+            <div >
+                <button
               onClick={() => navigate("/register")}
-              className="bg-white w-full sm:w-[100px] shadow-md text-black font-semibold hover:bg-blue-600 py-2 sm:py-3 rounded-lg transition duration-200"
+              className="mx-2 bg-white w-full sm:w-[100px] shadow-md text-black font-semibold hover:bg-blue-600 py-2 sm:py-3 rounded-lg transition duration-200"
               type="submit"
             >
               Register
             </button>
+            <button
+              onClick={() => navigate("/")}
+              className="bg-white w-full sm:w-[100px] shadow-md text-black font-semibold hover:bg-blue-600 py-2 sm:py-3 rounded-lg transition duration-200"
+              type="submit"
+            >
+              home
+            </button>
+            </div>
+          
           </div>
 
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-700 mb-6 mt-4 sm:mt-6">Login</h2>

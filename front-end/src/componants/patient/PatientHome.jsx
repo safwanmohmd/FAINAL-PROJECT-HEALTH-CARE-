@@ -53,7 +53,7 @@ const PatientHome = () => {
             Total Doctors
           </p>
           <h1 className="text-gray-900 text-3xl font-bold mt-2">
-            {allDoctors.length}
+            {allDoctors ? allDoctors.length : "0"}
           </h1>
         </div>
 

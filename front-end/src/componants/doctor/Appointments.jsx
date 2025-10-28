@@ -135,15 +135,15 @@ const Appointments = () => {
                   <td className="px-6 py-4 font-medium text-gray-900">
                     {appmnt.doctor_id.name}
                   </td>
-                  <td className="px-6 py-4">{appmnt.patient_id.name}</td>
-                  <td className="px-6 py-4">{appmnt.specialization.name}</td>
+                  <td className="px-6 py-4">{appmnt.patient_id?.name || "N/A"}</td>
+                  <td className="px-6 py-4">{appmnt.specialization?.name || "N/A"}</td>
                   <td className="px-6 py-4 max-w-xs truncate">
                     {appmnt.description}
                   </td>
                   <td className="px-6 py-4">
                     {new Date(appmnt.date).toLocaleString()}
                   </td>
-                  <td className="px-6 py-4 capitalize">{appmnt.status}</td>
+                  <td className="px-6 py-4 capitalize">{appmnt?.status || "N/A"}</td>
                   <td className="px-6 py-4 flex flex-wrap gap-2">
                     <button
                       onClick={() => handleApprove(appmnt)}

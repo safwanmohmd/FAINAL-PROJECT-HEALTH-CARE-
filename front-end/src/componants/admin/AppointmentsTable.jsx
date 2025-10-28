@@ -128,7 +128,7 @@ const AppointmentTable = () => {
                           className="bg-gray-50 border rounded w-full py-1 px-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
                         />
                       ) : (
-                        <div className="text-sm text-gray-500">{app.date?.split("T")[0] || "N/A"}</div>
+                        <div className="text-sm text-gray-500">{app?.date || "N/A"}</div>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

@@ -55,15 +55,16 @@ const PrescriptionTable = () => {
                       : "bg-white"
                   } border-b hover:bg-gray-50`}
                 >
-                  <td className="px-6 py-4">{presc.doctor_id.name}</td>
-                  <td className="px-6 py-4">{presc.patient_id.name}</td>
+                 <td className="px-6 py-4">{presc?.doctor_id?.name || "N/A"}</td>
+
+                  <td className="px-6 py-4">{presc.patient_id?.name || "N/A"}</td>
                  
                   <td className="px-6 py-4 max-h-20 w-64">
                     <div className="max-h-20 overflow-auto break-words">
                       {presc.medicines}
                     </div>
                   </td>
-               <td className="px-6 py-4">{presc.date}</td>
+               <td className="px-6 py-4">{presc?.date || "N/A"}</td>
                   <td className="px-6 py-4">
                     
                     <button
